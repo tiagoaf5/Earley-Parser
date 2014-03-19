@@ -1,0 +1,83 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  JDK_VERSION = "1.7";  static = true;
+  LOOKAHEAD = 1;}PARSER_BEGIN(EG1)
+public class EG1{  public static void main(String args []) throws ParseException  {    
+	/*EG1 parser = new EG1(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (EG1.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        EG1.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }*/
+
+	EG1 parser;
+	//JavaParser parser;
+    if (args.length == 0) {
+      System.out.println("Java Parser Version 1.1:  Reading from standard input . . .");
+      parser = new EG1(System.in);
+    } else if (args.length == 1) {
+      System.out.println("Java Parser Version 1.1:  Reading from file " + args[0] + " . . .");
+      try {
+        parser = new EG1(new java.io.FileInputStream(args[0]));
+      } catch (java.io.FileNotFoundException e) {
+        System.out.println("Java Parser Version 1.1:  File " + args[0] + " not found.");
+        return;
+      }
+    } else {
+      System.out.println("Java Parser Version 1.1:  Usage is one of:");
+      System.out.println("         java JavaParser < inputfile");
+      System.out.println("OR");
+      System.out.println("         java JavaParser inputfile");
+      return;
+    }
+    try {
+      parser.Expression();
+      System.out.println("Java Parser Version 1.1:  Java program parsed successfully.");
+    } catch (ParseException e) {
+      System.out.println(e.getMessage());
+      System.out.println("Java Parser Version 1.1:  Encountered errors during parse.");
+    }
+  }
+    }PARSER_END(EG1)SKIP :{  " "| "\r"| "\t"}TOKEN : /* OPERATORS */{  < OPEN : "<" >| < CLOSE : ">" >| < SEPARATOR : "::=" >| < QUOTES : "\"" >
+| < OR : "|" >
+| < EOL : "\n" >
+| < IDENTIFIER: <OPEN> ["A"-"Z","a"-"z"](["0"-"9","A"-"Z","a"-"z"])* <CLOSE>>
+| < NUMBER: (["0"-"9"])+ ( "." (["0"-"9"])*)? >
+| < STRING: <QUOTES> (["0"-"9","A"-"Z","a"-"z","+","*"])* <QUOTES> >
+| < EMPTY: ("A")? >}/*void Expression (): {}
+{
+	<IDENTIFIER> <SEPARATOR> f2() <EOL> Expression()	
+	| <EMPTY>
+}
+
+void f2():{}{
+	f3() | f4()
+}
+void f3():{}
+{
+	<IDENTIFIER> (f2() | f5())
+}
+
+void f4():{}
+{
+	<STRING> (f2() | f5())
+}
+
+void f5():{}
+{
+	<OR> f2()
+| <EMPTY >
+}
+*/
+
+void Expression():{}
+{	<IDENTIFIER> <SEPARATOR> f2() Expression()
+| <EOF>	
+}
+
+void f1():{}
+{	<EMPTY>
+}
+
+void f2():{}
+{<IDENTIFIER> f2()
+| <STRING> f2()
+| <OR> f2()
+| <EOL>
+}
+  
