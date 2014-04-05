@@ -1,2 +1,2 @@
-E	::=	T + id | id
-T	::=	E
+E ::= T + id | id
+T ::= E
