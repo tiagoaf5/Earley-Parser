@@ -1,3 +1,4 @@
+package main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,40 +13,42 @@ public class EarleyParser {
 		int left;
 		int current;
 		ArrayList<Integer> right;
-		
+
 		State(int left, int current, ArrayList<Integer> right, int i)
 		{
-			
+
 		}
-		
+
 	}
-	
+
 	private ArrayList<String> words;
 	private HashMap<Integer,ArrayList<ArrayList<Integer>>> grammar;
 	private ConcurrentLinkedQueue<State> queue;
-	
+
 	public EarleyParser(ArrayList<Integer> words, HashMap<Integer,ArrayList<ArrayList<Integer>>> grammar) {
 		this.words = words;
 		this.grammar = grammar;
 	}
-	
+
 	public boolean run()
 	{
 		ArrayList<Integer> first = new ArrayList<Integer>(1);
 		queue.add(new State(0,0,first,0)); // ???
-		
+
 		for(int i = 0; i < words.size(); i++)
 		{
 			//for(in)
 		}
-		
-		
+
+
 		return false;
 	}
-	/*
+
+}
+/*
 	function EARLEY-PARSE(words, grammar)
-    ENQUEUE((γ → •S, 0), chart[0])
-    for i ← from 0 to LENGTH(words) do
+    ENQUEUE((Î³ â†’ â€¢S, 0), chart[0])
+    for i â†� from 0 to LENGTH(words) do
         for each state in chart[i] do
             if INCOMPLETE?(state) then
                 if NEXT-CAT(state) is a nonterminal then
@@ -57,20 +60,20 @@ public class EarleyParser {
         end
     end
     return chart
- 
-procedure PREDICTOR((A → α•B, i), j, grammar)
-    for each (B → γ) in GRAMMAR-RULES-FOR(B, grammar) do
-        ADD-TO-SET((B → •γ, j), chart[ j])
+
+procedure PREDICTOR((A â†’ Î±â€¢B, i), j, grammar)
+    for each (B â†’ Î³) in GRAMMAR-RULES-FOR(B, grammar) do
+        ADD-TO-SET((B â†’ â€¢Î³, j), chart[ j])
     end
- 
-procedure SCANNER((A → α•B, i), j)
-    if B ⊂ PARTS-OF-SPEECH(word[j]) then
-        ADD-TO-SET((B → word[j], i), chart[j + 1])
+
+procedure SCANNER((A â†’ Î±â€¢B, i), j)
+    if B âŠ‚ PARTS-OF-SPEECH(word[j]) then
+        ADD-TO-SET((B â†’ word[j], i), chart[j + 1])
     end
- 
-procedure COMPLETER((B → γ•, j), k)
-    for each (A → α•Bβ, i) in chart[j] do
-        ADD-TO-SET((A → αB•β, i), chart[k])
+
+procedure COMPLETER((B â†’ Î³â€¢, j), k)
+    for each (A â†’ Î±â€¢BÎ², i) in chart[j] do
+        ADD-TO-SET((A â†’ Î±Bâ€¢Î², i), chart[k])
     end*/
 
-}
+
