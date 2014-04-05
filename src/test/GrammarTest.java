@@ -13,6 +13,7 @@ import org.junit.Test;
 
 public class GrammarTest {
 
+	@SuppressWarnings("serial")
 	@Test
 	public void testGrammar1() throws GrammarErrorException {
 		
@@ -20,14 +21,12 @@ public class GrammarTest {
 		LinkedHashSet<String> productions = a.getProductions();
 		HashMap<String, ArrayList<ArrayList<String>>> grammar = a.getGrammar();
 		
-		//start production
+		//test start production
 		assertEquals(a.getStartProduction(), "P");
 		
 		
-		//Productions
-		ArrayList<String> p = new ArrayList<String>() {
-			private static final long serialVersionUID = 1L;
-		{
+		//test Productions
+		ArrayList<String> p = new ArrayList<String>() {{
 			add("P");
 			add("S");
 			add("M");
@@ -37,10 +36,53 @@ public class GrammarTest {
 		for(String i: p)
 			assertTrue(productions.contains(i));
 		
-		/*HashMap<String, String> test = new HashMap<String, String>(){{
-			    	 put("a","b");
-			    }
-		};*/
+		//test grammar
+		HashMap<String, ArrayList<ArrayList<String>>> g = new HashMap<String, ArrayList<ArrayList<String>>>() {{
+			put("P", new ArrayList<ArrayList<String>>() {{ //P ::= S
+				add(new ArrayList<String>() {{ //S 
+					add("S");
+				}});
+			}});
+			
+			put("S", new ArrayList<ArrayList<String>>() {{ //S ::= S "+" M | M
+				add(new ArrayList<String>() {{ //S "+" M
+					add("S");
+					add("\"+\"");
+					add("M");
+				}});
+				add(new ArrayList<String>() {{ //M
+					add("M");
+				}});
+			}});
+			
+			put("M", new ArrayList<ArrayList<String>>() {{ //M ::= M "*" T | T
+				add(new ArrayList<String>() {{ //M "*" T
+					add("M");
+					add("\"*\"");
+					add("T");
+				}});
+				add(new ArrayList<String>() {{ //T
+					add("T");
+				}});
+			}}); 
+			
+			put("T", new ArrayList<ArrayList<String>>() {{ //T ::= "1" | "2" | "3" | "4"
+				add(new ArrayList<String>() {{ //1
+					add("\"1\"");
+				}});
+				add(new ArrayList<String>() {{ //2 
+					add("\"2\"");
+				}});
+				add(new ArrayList<String>() {{ //3
+					add("\"3\"");
+				}});
+				add(new ArrayList<String>() {{ //4 
+					add("\"4\"");
+				}});
+			}});
+		}};
+		
+		assertTrue(grammar.equals(g));
 	}
 
 }
