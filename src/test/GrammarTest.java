@@ -239,10 +239,11 @@ public class GrammarTest {
 		//test Productions
 		ArrayList<String> p = new ArrayList<String>() {{
 			add("A");
+			add("BC");
 			add("B");
-			add("C");//TODO:
+			add("C");
 			add("b");
-			//add("c");
+			add("c");
 		}};
 
 		System.out.println(p);
@@ -251,14 +252,11 @@ public class GrammarTest {
 		for(String i: productions)
 			assertTrue(p.contains(i));
 
-
-
 		//test grammar
 		HashMap<String, ArrayList<ArrayList<String>>> g = new HashMap<String, ArrayList<ArrayList<String>>>() {{
 			put("A", new ArrayList<ArrayList<String>>() {{ //A ::= BC
 				add(new ArrayList<String>() {{ //BC
-					add("B");
-					add("C");
+					add("BC");
 				}});
 			}});
 
