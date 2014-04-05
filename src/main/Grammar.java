@@ -36,8 +36,12 @@ public class Grammar {
 		readFile();
 		semanticAnalysis();
 	}
+	
+	public Grammar() {
 
-	private void readFile() throws GrammarErrorException {
+	}
+
+	public void readFile() throws GrammarErrorException {
 
 		File f = new File(filePath);
 
@@ -53,7 +57,7 @@ public class Grammar {
 
 				System.out.println("LINE - " + line);
 
-				if (line.matches("[A-Za-z0-9]+ ::= (.*)")) { //match Rule: production ::= body
+				if (line.matches("[A-Za-z][A-Za-z0-9]* ::= (.*)")) { //match Rule: production ::= body
 
 					String head = line.substring(0,line.indexOf("::=") - 1);
 					String body = line.substring(line.indexOf("::=") + 3);
@@ -92,7 +96,7 @@ public class Grammar {
 	}
 
 
-	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) {
+	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) throws GrammarErrorException {
 		String[] tmp2 = body.split(RE_SPLIT_PIPES);
 
 		for (String i : tmp2) {
@@ -100,15 +104,19 @@ public class Grammar {
 
 			//add non-terminals to productions list
 			for(String j: tmp){
-				if(j.charAt(0) != '\"')
+				if(j.charAt(0) != '\"') {
+					
+					if(!j.matches("[A-Za-z][A-Za-z0-9]*"))
+						throw new GrammarErrorException("Invalid production name: \"" + j + "\"");
 					productions.add(j);
+				}
 			}
 
 			bodies.add(tmp);	
 		}
 	}
 
-	void semanticAnalysis() throws GrammarErrorException {
+	public void semanticAnalysis() throws GrammarErrorException {
 		for(String x : productions)
 			if(!grammar.containsKey(x))
 				throw new GrammarErrorException("Production \"" + x + "\" doesn't have a body");
@@ -151,6 +159,22 @@ public class Grammar {
 	 */
 	public String getStartProduction() {
 		return startProduction;
+	}
+
+
+	/**
+	 * @return the filePath
+	 */
+	public String getFilePath() {
+		return filePath;
+	}
+
+
+	/**
+	 * @param filePath the filePath to set
+	 */
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	
