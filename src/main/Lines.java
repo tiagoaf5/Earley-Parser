@@ -34,16 +34,17 @@ public class Lines {
 				Sentence newLine=new Sentence(splits);
 				lines.add(newLine);
 			
-				System.out.println(line);
+				/*System.out.println(line);
 				
 				for(int i=0; i<splits.length; i++) {
 					System.out.println(i + "'" + splits[i]+"'");
-				}
+				}*/
 			}
 			reader.close();
 			input.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("File " + filename + " doesn't exist!");
+			//e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +68,7 @@ public class Lines {
 		count=0;
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Lines s=new Lines("oi.txt");
-	}
+	}*/
 }
