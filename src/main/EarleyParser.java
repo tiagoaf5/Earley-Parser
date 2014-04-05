@@ -1,4 +1,4 @@
-package main;
+/*package main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class EarleyParser {
 		return false;
 	}
 
-}
+}*/
 /*
 	function EARLEY-PARSE(words, grammar)
     ENQUEUE((Î³ â†’ â€¢S, 0), chart[0])

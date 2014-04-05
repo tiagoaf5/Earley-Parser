@@ -1,10 +1,10 @@
 package main;
 
-public class FileError extends Exception {
+public class GrammarError extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	String msg;
-	public FileError(String string) {
+	public GrammarError(String string) {
 		msg = string;
 	}
 
