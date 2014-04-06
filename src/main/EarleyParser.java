@@ -2,8 +2,6 @@ package main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EarleyParser {
 
@@ -20,53 +18,98 @@ public class EarleyParser {
 			this.right = right;
 			this.current = current;
 		}
+		
+		public String toString()
+		{
+			return left+"->"+right+","+current+","+i;
+		}
+		
+		public boolean equals(Object obj) {
+	        if(obj instanceof State)
+	        {
+	        	State s2 = (State)obj;
+	        	if(i != s2.i)
+	        		return false;
+	        	if(current != s2.current)
+	        		return false;
+	        	if(!left.equals(s2.left))
+	        		return false;
+	        	if(right.size()!=s2.right.size())
+	        		return false;
+	        	for(int k = 0; k < right.size(); k++)
+	        		if(!right.get(k).equals(s2.right.get(k)))
+	        			return false;
+	        	return true;
+	        }
+	        return false;
+	    }
 
 	}
 	
 	private Sentence words;
 	private HashMap<String,ArrayList<ArrayList<String>>> grammar;
-	private ArrayList<ConcurrentLinkedQueue<State>> charts;
+	private String start;
+	private ArrayList<ArrayList<State>> charts;
 	
-	public EarleyParser(Sentence words, HashMap<String,ArrayList<ArrayList<String>>> grammar) {
+	public EarleyParser(Sentence words, Grammar grammar) {
 		this.words = words;
-		this.grammar = grammar;
-		this.charts = new ArrayList<ConcurrentLinkedQueue<State>>(words.getSentence().size());
+		this.grammar = grammar.getGrammar();
+		this.start = grammar.getStartProduction();
+		this.charts = new ArrayList<ArrayList<State>>(words.getSentence().size()+1);
+		for(int i = 0; i < words.getSentence().size()+1; i++)
+		{
+			this.charts.add(new ArrayList<State>());
+		}
 	}
 
 	public boolean run()
 	{
+		
 		//INICIALIZACAO
 		ArrayList<String> right_root = new ArrayList<String>(1);
-		right_root.add("S");
-		charts.get(0).add(new State("_ROOT",0,right_root,0));
+		right_root.add(start);
+		addIfNotContains(charts.get(0),new State("_ROOT",0,right_root,0));
 		
-		for(int i = 0; i < words.getSentence().size(); i++)
+		for(int i = 0; i < words.getSentence().size()+1; i++)
 		{
-			Iterator<State> it = charts.get(i).iterator();
-			while(it.hasNext())
+			System.out.println("Word no "+i);
+			if(i < words.getSentence().size())
+				System.out.println(words.getSentence().get(i)+"\n");
+			
+			if(charts.get(i).isEmpty())
 			{
-				State s = it.next();
-				//if(words.getSentence().get(i).startsWith("\"") || (s.current==s.right.size() && !words.getSentence().get(i).startsWith("\"")))
+				System.out.println("Nothing to \"follow\" for this word");
+				return false;
+			}
+			
+			for(int snum = 0; snum < charts.get(i).size();snum++)
+			{
+				State s = charts.get(i).get(snum);
+				System.out.println("state to process " + s);
 				if(s.current==s.right.size()) // end of rule
 				{
-					//complete
+					System.out.println("Completer");
 					completer(s,i);
 				} else
 				{
 					if(s.right.get(s.current).startsWith("\""))
 					{
-						//scanner
+						System.out.println("Scanner");
 						scanner(s,i);
 					}
 					else
 					{
-						//predictor
+						System.out.println("Predictor");
 						predictor(s,i);
 					}
 				}
 			}
 		}
-		return false;
+		
+		State last_state = new State("_ROOT",1,right_root,0);
+		ArrayList<State> lastchart = charts.get(charts.size()-1);
+		return lastchart.contains(last_state);
+		
 	}
 
 	private void predictor(State s, int j) {
@@ -74,29 +117,52 @@ public class EarleyParser {
 		ArrayList<ArrayList<String>> rules = grammar.get(B);
 		for(ArrayList<String> rule : rules)
 		{
-			charts.get(j).add(new State(B,0,rule,j));
+			System.out.print("Predictor Action");
+			addIfNotContains(charts.get(j),new State(B,0,rule,j));
 		}
 	}
 
-	private void scanner(State s, int j) { // ?????
+	private void scanner(State s, int j) {
+		if(j+1 >= charts.size())
+			return;
 		String B = s.right.get(s.current);
+		if(B.startsWith("\""))
+			B = B.substring(1, B.length()-1);
 		if(B.equals(words.getSentence().get(j)))
 		{
-			charts.get(j+1).add(new State(s.left,s.current+1,s.right,s.i));
+			System.out.print("Scanner Action");
+			addIfNotContains(charts.get(j+1),new State(s.left,s.current+1,s.right,s.i));
 		}
 	}
 
 	private void completer(State s, int k) {
-		Iterator<State> it = charts.get(s.i).iterator();
-		while(it.hasNext())
+		for(int snum = 0; snum < charts.get(s.i).size(); snum++)
 		{
-			State currentState = it.next();
+			State currentState = charts.get(s.i).get(snum);
+			if(currentState.current >= currentState.right.size())
+				continue;
 			if(s.left.equals(currentState.right.get(currentState.current)))
 			{
+			//	System.out.println(currentState);
+				System.out.print("Completer Action");
 				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
-				charts.get(k).add(newState);
+				addIfNotContains(charts.get(k),newState);
 			}
 		}
+	}
+	
+	private void addIfNotContains(ArrayList<State> list, State s)
+	{
+		for(int i = 0; i < list.size(); i++)
+		{
+			if(list.get(i).equals(s))
+			{
+			System.out.println("  not Added " + s);
+				return;
+			}
+		}
+		System.out.println("  Added " + s);
+		list.add(s);
 	}
 
 }
