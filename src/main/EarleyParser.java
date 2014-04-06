@@ -21,7 +21,17 @@ public class EarleyParser {
 		
 		public String toString()
 		{
-			return left+"->"+right+","+current+","+i;
+			String out = left;
+			for(int k = 0; k < right.size(); k++)
+			{
+				if(k==current)
+					out += "@";
+				out += right.get(k);	
+			}
+			if(right.size()==current)
+				out += "@";
+			
+			return "("+out+","+i+")";
 		}
 		
 		public boolean equals(Object obj) {
@@ -68,17 +78,17 @@ public class EarleyParser {
 		//INICIALIZACAO
 		ArrayList<String> right_root = new ArrayList<String>(1);
 		right_root.add(start);
-		addIfNotContains(charts.get(0),new State("_ROOT",0,right_root,0));
+		addIfNotContains(0,new State("_ROOT",0,right_root,0));
 		
 		for(int i = 0; i < words.getSentence().size()+1; i++)
 		{
-			System.out.println("Word no "+i);
+			System.out.println("\nWord no "+i);
 			if(i < words.getSentence().size())
-				System.out.println(words.getSentence().get(i)+"\n");
+				System.out.println(words.getSentence().get(i));
 			
 			if(charts.get(i).isEmpty())
 			{
-				System.out.println("Nothing to \"follow\" for this word");
+				System.out.println("Nothing to do for this word");
 				return false;
 			}
 			
@@ -118,7 +128,7 @@ public class EarleyParser {
 		for(ArrayList<String> rule : rules)
 		{
 			System.out.print("Predictor Action");
-			addIfNotContains(charts.get(j),new State(B,0,rule,j));
+			addIfNotContains(j,new State(B,0,rule,j));
 		}
 	}
 
@@ -127,11 +137,11 @@ public class EarleyParser {
 			return;
 		String B = s.right.get(s.current);
 		if(B.startsWith("\""))
-			B = B.substring(1, B.length()-1);
+			B = B.substring(1, B.length()-1); //TODO change when all tokens have ""
 		if(B.equals(words.getSentence().get(j)))
 		{
 			System.out.print("Scanner Action");
-			addIfNotContains(charts.get(j+1),new State(s.left,s.current+1,s.right,s.i));
+			addIfNotContains(j+1,new State(s.left,s.current+1,s.right,s.i));
 		}
 	}
 
@@ -146,22 +156,23 @@ public class EarleyParser {
 			//	System.out.println(currentState);
 				System.out.print("Completer Action");
 				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
-				addIfNotContains(charts.get(k),newState);
+				addIfNotContains(k,newState);
 			}
 		}
 	}
 	
-	private void addIfNotContains(ArrayList<State> list, State s)
+	private void addIfNotContains(int num, State s)
 	{
+		ArrayList<State> list = charts.get(num);
 		for(int i = 0; i < list.size(); i++)
 		{
 			if(list.get(i).equals(s))
 			{
-			System.out.println("  not Added " + s);
+				System.out.println("  NOT added " + s + " to chart " + num);
 				return;
 			}
 		}
-		System.out.println("  Added " + s);
+		System.out.println("  Added " + s + " to chart " + num);
 		list.add(s);
 	}
 
