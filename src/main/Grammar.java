@@ -12,8 +12,18 @@ import java.util.regex.Pattern;
 
 public class Grammar {
 
+	/*
+	 * Sites expressoes regulares
+	 * 
+	 * http://www.regexr.com/
+	 * http://www.regexplanet.com/advanced/java/index.html
+	 * 
+	 */
+
 	final String RE_SPLIT_SPACES = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
+	final String RE_SPLIT_SPACES2 =  	"[^\\s\\\"'()]+|\\\"([^\\\"]*)\\\"|'([^']*)'|\\(([^\\)]*)\\)*\\*"; //nova com parentesis [^\s\"'()]+|\"([^\"]*)\"|'([^']*)'|\(([^\)]*)\)*\*
 	final String RE_SPLIT_PIPES = "\\|(?![^\"]*\"(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+	final String RE_SPLIT_PARENTHESES = "\\(([^\\)]*)\\)*\\*"; // \(([^\)]*)\)*\*
 
 	String filePath;
 
@@ -98,17 +108,20 @@ public class Grammar {
 
 	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) throws GrammarErrorException {
 		String[] tmp2 = body.split(RE_SPLIT_PIPES);
+		
 
 		for (String i : tmp2) {
 			ArrayList<String> tmp = splitBySpace(i, true);
 
 			//add non-terminals to productions list
-			for(String j: tmp){
+			for(String j: tmp) {
 				if(j.charAt(0) != '\"') {
 					
 					if(!j.matches("[A-Za-z][A-Za-z0-9]*"))
 						throw new GrammarErrorException("Invalid production name: \"" + j + "\"");
 					productions.add(j);
+				} else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
+					/*Caso de ser ("ab" C)* */
 				}
 			}
 
