@@ -10,6 +10,8 @@ import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.naming.PartialResultException;
+
 public class Grammar {
 
 	/*
@@ -19,6 +21,8 @@ public class Grammar {
 	 * http://www.regexplanet.com/advanced/java/index.html
 	 * 
 	 */
+
+	final String GR_SEPARATOR = "::=";
 
 	final String RE_SPLIT_SPACES = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
 	final String RE_SPLIT_SPACES2 =  	"[^\\s\\\"'()]+|\\\"([^\\\"]*)\\\"|'([^']*)'|\\(([^\\)]*)\\)*\\*"; //nova com parentesis [^\s\"'()]+|\"([^\"]*)\"|'([^']*)'|\(([^\)]*)\)*\*
@@ -31,8 +35,8 @@ public class Grammar {
 	LinkedHashSet<String> productions = new LinkedHashSet<String>();
 
 	String startProduction;
-	
-	static private int production_index = 0;
+
+	static private int production_index = 1;
 
 	public static void main(String[] args) {
 		try {
@@ -48,7 +52,7 @@ public class Grammar {
 		readFile();
 		semanticAnalysis();
 	}
-	
+
 	public Grammar() {
 
 	}
@@ -108,35 +112,86 @@ public class Grammar {
 	}
 
 
+	@SuppressWarnings("serial")
 	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) throws GrammarErrorException {
 		String[] tmp2 = body.split(RE_SPLIT_PIPES);
-		
+
 
 		for (String i : tmp2) {
-			ArrayList<String> tmp = splitBySpace(i, true);
+			System.out.println("-> " + i);
+
+
+			/*ArrayList<String> parentheses = splitSpecial(i, RE_SPLIT_PARENTHESES);
+			System.out.println("---> " + parentheses);
+			 */
+
+			/*   ----------------------------------------------------     */
+
+			ArrayList<String> parentheses = new ArrayList<String>(); //TODO: delete this
+
+			Pattern regex = Pattern.compile(RE_SPLIT_PARENTHESES);
+			Matcher regexMatcher = regex.matcher(i);
+
+			StringBuffer sb = new StringBuffer();
+			while (regexMatcher.find()) {
+				String matched = regexMatcher.group().trim();
+				String production = "#" + production_index;
+				String rule_body = null;
+
+				if(matched.charAt(matched.length() - 1) == '*') {
+					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
+							+ " | " +  matched.substring(1, matched.length() - 2) + " | \"\"";
+				}
+				//parse this new rule
+				ArrayList<ArrayList<String>> b = new ArrayList<ArrayList<String>>();
+				grammar.put(production, b);
+				parseBody(rule_body, b);
+
+				parentheses.add(matched); 
+				String replacement = production;
+				regexMatcher.appendReplacement(sb, replacement);
+				production_index++;
+			} 
+
+			regexMatcher.appendTail(sb);
+
+			System.out.println(sb.toString());
+
+			/*   ----------------------------------------------------     */
+
+			ArrayList<String> tmp = splitSpecial(sb.toString(), RE_SPLIT_SPACES);
+			System.out.println(tmp);
 
 			//add non-terminals to productions list
 			for(String j: tmp) {
 				if(j.charAt(0) != '\"') {
-					
-					if(!j.matches("[A-Za-z][A-Za-z0-9]*"))
+
+					if(!j.matches("[A-Za-z][A-Za-z0-9]*|#[0-9]*"))
 						throw new GrammarErrorException("Invalid production name: \"" + j + "\"");
 					productions.add(j);
-				} else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
-					/*Caso de ser ("ab" C)* */
-					
-					String inside = j.substring(1, j.length() - 3);
-					
+				} /*else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
+					//Caso de ser ("ab" C)* 
+
+					//New production body
+					String inside = j.substring(1, j.length() - 3) + " " + "#" + production_index;
+
+
+
 					//create entry on grammar
 					grammar.put("#" + production_index, new ArrayList<ArrayList<String>>());
-					
+					grammar.get("#" + production_index).add(new ArrayList<String>() {{add("");}});
+
 					//add to the productions list (avoid semantic errors)
 					productions.add("#" + production_index);
+
+					j = "#" + production_index;
+
 					production_index++;
-					
-					
+
+
+
 					//TODO: keep going you're doing Ok
-				}
+				}*/
 			}
 
 			bodies.add(tmp);	
@@ -149,12 +204,12 @@ public class Grammar {
 				throw new GrammarErrorException("Production \"" + x + "\" doesn't have a body");
 	}
 
-	ArrayList<String> splitBySpace(String subjectString, boolean textInsideInverted) {
+	ArrayList<String> splitSpecial(String subjectString, String re) {
 		//http://stackoverflow.com/questions/366202/regex-for-splitting-a-string-using-space-when-not-surrounded-by-single-or-double
 
 		ArrayList<String> matchList = new ArrayList<String>();
 
-		Pattern regex = Pattern.compile(RE_SPLIT_SPACES);
+		Pattern regex = Pattern.compile(re); //RE_SPLIT_SPACES
 		Matcher regexMatcher = regex.matcher(subjectString);
 
 		while (regexMatcher.find()) {
@@ -163,6 +218,8 @@ public class Grammar {
 
 		return matchList;
 	}
+
+
 
 
 	/**
@@ -204,7 +261,7 @@ public class Grammar {
 		this.filePath = filePath;
 	}
 
-	
-	
+
+
 
 }
