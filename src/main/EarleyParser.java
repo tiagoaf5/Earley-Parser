@@ -139,13 +139,19 @@ public class EarleyParser {
 			return;
 		String B = s.right.get(s.current);
 		/*if(B.startsWith("\""))
-			B = B.substring(1, B.length()-1); //TODO change when all tokens have ""*/
+			B = B.substring(1, B.length()-1);*/
 		if(B.equals(words.getSentence().get(j)))
 		{
 			System.out.print("Scanner Action");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
 			addIfNotContains(j+1,snew);
+		} else if(B.equals("\"\""))
+		{
+			System.out.print("Scanner Action epsilon");
+			State snew = new State(s.left,s.current+1,s.right,s.i);
+			addIfNotContains(j,snew);
 		}
+
 	}
 
 	private void completer(State s, int k) {

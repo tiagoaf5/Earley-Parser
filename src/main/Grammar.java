@@ -36,7 +36,7 @@ public class Grammar {
 
 	String startProduction;
 
-	static private int production_index = 1;
+	private int production_index = 1;
 
 	public static void main(String[] args) {
 		try {
