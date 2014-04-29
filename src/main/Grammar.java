@@ -10,8 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.naming.PartialResultException;
-
 public class Grammar {
 
 	/*
@@ -112,7 +110,6 @@ public class Grammar {
 	}
 
 
-	@SuppressWarnings("serial")
 	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) throws GrammarErrorException {
 		String[] tmp2 = body.split(RE_SPLIT_PIPES);
 
@@ -133,7 +130,10 @@ public class Grammar {
 			Matcher regexMatcher = regex.matcher(i);
 
 			StringBuffer sb = new StringBuffer();
-			while (regexMatcher.find()) {
+			
+			while (regexMatcher.find()) 
+			{
+				
 				String matched = regexMatcher.group().trim();
 				String production = "#" + production_index;
 				String rule_body = null;
@@ -146,6 +146,10 @@ public class Grammar {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
 							+ " | " +  matched.substring(1, matched.length() - 2);
 				}
+				else if(matched.charAt(matched.length() - 1) == '?') {
+					rule_body = matched.substring(1, matched.length() - 2) + " | \"\"";
+				}
+				
 				//parse this new rule
 				ArrayList<ArrayList<String>> b = new ArrayList<ArrayList<String>>();
 				grammar.put(production, b);

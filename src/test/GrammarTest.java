@@ -17,7 +17,7 @@ public class GrammarTest {
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
-/*
+
 
 	@SuppressWarnings("serial")
 	@Test
@@ -279,7 +279,7 @@ public class GrammarTest {
 		a.semanticAnalysis();
 		
 	}
-	*/
+	
 	@SuppressWarnings("serial")
 	@Test
 	public void testGrammarStar() throws GrammarErrorException {
