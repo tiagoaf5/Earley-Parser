@@ -12,11 +12,11 @@ public class SentencesTest {
 	public void testSentences1() {
 		Lines lines=new Lines("ficheiros_teste/sentences1.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
-			add("2");
-			add("+");
-			add("3");
-			add("*");
-			add("4");
+			add("\"2\"");
+			add("\"+\"");
+			add("\"3\"");
+			add("\"*\"");
+			add("\"4\"");
 		}};
 		ArrayList<String> actual =new ArrayList<String> ();
 		actual=lines.getNextLine();
@@ -29,16 +29,16 @@ public class SentencesTest {
 	public void testSentences2() {
 		Lines lines=new Lines("ficheiros_teste/sentences2.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
-			add("id");
-			add("+");
-			add("id");
-			add("+");
-			add("id");
+			add("\"id\"");
+			add("\"+\"");
+			add("\"id\"");
+			add("\"+\"");
+			add("\"id\"");
 		}};
 		ArrayList<String> actual=lines.getNextLine();
 		assertEquals(expected, actual);
 		expected = new ArrayList<String> () {{
-			add("id");
+			add("\"id\"");
 		}};
 		actual=lines.getNextLine();
 		assertEquals(expected, actual);
@@ -50,7 +50,7 @@ public class SentencesTest {
 	public void testSentences3() {
 		Lines lines=new Lines("ficheiros_teste/sentences3.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
-			add("bc");
+			add("\"bc\"");
 		}};
 		ArrayList<String> actual =new ArrayList<String> ();
 		actual=lines.getNextLine();

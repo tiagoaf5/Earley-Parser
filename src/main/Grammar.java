@@ -31,6 +31,8 @@ public class Grammar {
 	LinkedHashSet<String> productions = new LinkedHashSet<String>();
 
 	String startProduction;
+	
+	static private int production_index = 0;
 
 	public static void main(String[] args) {
 		try {
@@ -122,6 +124,18 @@ public class Grammar {
 					productions.add(j);
 				} else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
 					/*Caso de ser ("ab" C)* */
+					
+					String inside = j.substring(1, j.length() - 3);
+					
+					//create entry on grammar
+					grammar.put("#" + production_index, new ArrayList<ArrayList<String>>());
+					
+					//add to the productions list (avoid semantic errors)
+					productions.add("#" + production_index);
+					production_index++;
+					
+					
+					//TODO: keep going you're doing Ok
 				}
 			}
 

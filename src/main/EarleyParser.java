@@ -136,8 +136,8 @@ public class EarleyParser {
 		if(j+1 >= charts.size())
 			return;
 		String B = s.right.get(s.current);
-		if(B.startsWith("\""))
-			B = B.substring(1, B.length()-1); //TODO change when all tokens have ""
+		/*if(B.startsWith("\""))
+			B = B.substring(1, B.length()-1); //TODO change when all tokens have ""*/
 		if(B.equals(words.getSentence().get(j)))
 		{
 			System.out.print("Scanner Action");

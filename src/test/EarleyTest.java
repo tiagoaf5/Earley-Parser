@@ -49,5 +49,15 @@ public class EarleyTest {
 		System.out.println(result);
 		assertFalse(result);
 	}
+	
+	@Test
+	public void test_epsa() throws GrammarErrorException {
+		Grammar g = new Grammar("./ficheiros_teste/grammar_epsa.txt");
+		Lines lines=new Lines("./ficheiros_teste/sentences_epsa.txt");
+		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+	}
 
 }

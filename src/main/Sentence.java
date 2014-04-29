@@ -8,7 +8,7 @@ public class Sentence {
 	public Sentence(String[] splits) {
 		
 		for(int i=0; i<splits.length; i++) {
-			tokens.add(splits[i]);
+			tokens.add("\"" + splits[i] + "\"");
 		}
 	}
 	
