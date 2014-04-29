@@ -84,5 +84,25 @@ public class EarleyTest {
 		System.out.println(result2);
 		assertTrue(result2);
 	}
+	
+	@Test
+	public void test_star() throws GrammarErrorException {
+		Grammar g = new Grammar("./ficheiros_teste/grammar_star.txt");
+		Lines lines=new Lines("./ficheiros_teste/sentences_star.txt");
+		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void test_star2() throws GrammarErrorException {
+		Grammar g = new Grammar("./ficheiros_teste/grammar_star2.txt");
+		Lines lines=new Lines("./ficheiros_teste/sentences_star2.txt");
+		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+	}
 
 }

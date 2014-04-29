@@ -17,7 +17,7 @@ public class GrammarTest {
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
-
+/*
 
 	@SuppressWarnings("serial")
 	@Test
@@ -278,6 +278,65 @@ public class GrammarTest {
 		exception.expect(GrammarErrorException.class);
 		a.semanticAnalysis();
 		
+	}
+	*/
+	@SuppressWarnings("serial")
+	@Test
+	public void testGrammarStar() throws GrammarErrorException {
+		Grammar a = new Grammar();
+		a.setFilePath("./ficheiros_teste/grammar_star.txt");
+
+		a.readFile();
+		
+		LinkedHashSet<String> productions = a.getProductions();
+
+		//test start production
+		assertEquals(a.getStartProduction(), "A");
+		/*HashMap<String, ArrayList<ArrayList<String>>> grammar = a.getGrammar();
+
+
+		//test Productions
+		ArrayList<String> p = new ArrayList<String>() {{
+			add("A");
+			add("BC");
+			add("B");
+			add("C");
+			add("b");
+			add("c");
+		}};
+
+		System.out.println(p);
+		assertTrue(p.size() == productions.size());
+
+		for(String i: productions)
+			assertTrue(p.contains(i));
+
+		//test grammar
+		HashMap<String, ArrayList<ArrayList<String>>> g = new HashMap<String, ArrayList<ArrayList<String>>>() {{
+			put("A", new ArrayList<ArrayList<String>>() {{ //A ::= BC
+				add(new ArrayList<String>() {{ //BC
+					add("BC");
+				}});
+			}});
+
+			put("B", new ArrayList<ArrayList<String>>() {{ //B ::= b
+				add(new ArrayList<String>() {{ //b
+					add("b");
+				}});
+			}});
+			
+			put("C", new ArrayList<ArrayList<String>>() {{ //C ::= c
+				add(new ArrayList<String>() {{ //c 
+					add("c");
+				}});
+			}});
+		}};
+
+		assertEquals(g, grammar);
+
+		exception.expect(GrammarErrorException.class);
+		a.semanticAnalysis();
+		*/
 	}
 
 
