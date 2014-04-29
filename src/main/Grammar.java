@@ -27,7 +27,7 @@ public class Grammar {
 	final String RE_SPLIT_SPACES = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
 	final String RE_SPLIT_SPACES2 =  	"[^\\s\\\"'()]+|\\\"([^\\\"]*)\\\"|'([^']*)'|\\(([^\\)]*)\\)*\\*"; //nova com parentesis [^\s\"'()]+|\"([^\"]*)\"|'([^']*)'|\(([^\)]*)\)*\*
 	final String RE_SPLIT_PIPES = "\\|(?![^\"]*\"(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
-	final String RE_SPLIT_PARENTHESES = "\\(([^\\)]*)\\)*\\*"; // \(([^\)]*)\)*\*
+	final String RE_SPLIT_PARENTHESES = "\\(([^\\)]*)\\)*(\\*|\\+|\\?)"; // \(([^\)]*)\)*\*
 
 	String filePath;
 
@@ -141,6 +141,10 @@ public class Grammar {
 				if(matched.charAt(matched.length() - 1) == '*') {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
 							+ " | " +  matched.substring(1, matched.length() - 2) + " | \"\"";
+				}
+				else if(matched.charAt(matched.length() - 1) == '+') {
+					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
+							+ " | " +  matched.substring(1, matched.length() - 2);
 				}
 				//parse this new rule
 				ArrayList<ArrayList<String>> b = new ArrayList<ArrayList<String>>();
