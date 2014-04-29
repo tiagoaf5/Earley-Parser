@@ -55,8 +55,11 @@ public class EarleyTest {
 		Grammar g = new Grammar("./ficheiros_teste/grammar_epsa.txt");
 		Lines lines=new Lines("./ficheiros_teste/sentences_epsa.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
 		EarleyParser ep2 = new EarleyParser(lines.getLines().get(1), g);
-		boolean result = ep.run() && ep2.run();
+		result = ep2.run();
 		System.out.println(result);
 		assertTrue(result);
 	}
