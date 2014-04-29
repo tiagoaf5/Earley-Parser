@@ -10,6 +10,7 @@ public class EarleyParser {
 		String left;
 		int current; // pos na regra da gramatica
 		ArrayList<String> right;
+		//State parent = null;
 		
 		State(String left, int current, ArrayList<String> right, int i)
 		{
@@ -21,7 +22,7 @@ public class EarleyParser {
 		
 		public String toString()
 		{
-			String out = left;
+			String out = left + "->";
 			for(int k = 0; k < right.size(); k++)
 			{
 				if(k==current)
@@ -128,7 +129,8 @@ public class EarleyParser {
 		for(ArrayList<String> rule : rules)
 		{
 			System.out.print("Predictor Action");
-			addIfNotContains(j,new State(B,0,rule,j));
+			State snew = new State(B,0,rule,j);
+			addIfNotContains(j,snew);
 		}
 	}
 
@@ -141,7 +143,8 @@ public class EarleyParser {
 		if(B.equals(words.getSentence().get(j)))
 		{
 			System.out.print("Scanner Action");
-			addIfNotContains(j+1,new State(s.left,s.current+1,s.right,s.i));
+			State snew = new State(s.left,s.current+1,s.right,s.i);
+			addIfNotContains(j+1,snew);
 		}
 	}
 
