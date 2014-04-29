@@ -134,24 +134,27 @@ public class EarleyParser {
 		}
 	}
 
-	private void scanner(State s, int j) {
-		if(j+1 >= charts.size())
-			return;
+	private void scanner(State s, int j) {		
 		String B = s.right.get(s.current);
-		/*if(B.startsWith("\""))
-			B = B.substring(1, B.length()-1);*/
-		if(B.equals(words.getSentence().get(j)))
-		{
-			System.out.print("Scanner Action");
-			State snew = new State(s.left,s.current+1,s.right,s.i);
-			addIfNotContains(j+1,snew);
-		} else if(B.equals("\"\""))
+		boolean epsilon = B.equals("\"\"");
+		
+		if(j > words.getSentence().size())
+			return;
+		
+		if(j == words.getSentence().size() && !epsilon)//only empty strings can be scanned in last chart
+			return;
+		
+		if(epsilon)
 		{
 			System.out.print("Scanner Action epsilon");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
-			addIfNotContains(j,snew);
+			addIfNotContains(j,snew); //adds to current chart
+		} else if(B.equals(words.getSentence().get(j))) 
+		{
+			System.out.print("Scanner Action");
+			State snew = new State(s.left,s.current+1,s.right,s.i);
+			addIfNotContains(j+1,snew); //adds to next chart
 		}
-
 	}
 
 	private void completer(State s, int k) {
