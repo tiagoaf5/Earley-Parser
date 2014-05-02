@@ -107,5 +107,47 @@ public class EarleyTest {
 		System.out.println(result);
 		assertTrue(result);
 	}
+	
+	@Test
+	public void test_plus() throws GrammarErrorException {
+		Grammar g = new Grammar("./ficheiros_teste/grammar_plus.txt");
+		Lines lines=new Lines("./ficheiros_teste/sentences_plus.txt");
+		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+		
+		ep = new EarleyParser(lines.getLines().get(1), g);
+		result = ep.run();
+		System.out.println(result);
+		assertFalse(result);
+	}
+	
+	@Test
+	public void test_question() throws GrammarErrorException {
+		Grammar g = new Grammar("./ficheiros_teste/grammar_question.txt");
+		Lines lines=new Lines("./ficheiros_teste/sentences_question.txt");
+		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
+		boolean result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+		
+		ep = new EarleyParser(lines.getLines().get(1), g);
+		result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+		
+		ep = new EarleyParser(lines.getLines().get(2), g);
+		result = ep.run();
+		System.out.println(result);
+		assertTrue(result);
+		
+		ep = new EarleyParser(lines.getLines().get(3), g);
+		result = ep.run();
+		System.out.println(result);
+		assertFalse(result);
+		
+		
+	}
 
 }

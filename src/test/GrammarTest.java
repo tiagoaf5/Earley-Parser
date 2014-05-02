@@ -280,7 +280,6 @@ public class GrammarTest {
 		
 	}
 	
-	@SuppressWarnings("serial")
 	@Test
 	public void testGrammarStar() throws GrammarErrorException {
 		Grammar a = new Grammar();
@@ -337,6 +336,18 @@ public class GrammarTest {
 		exception.expect(GrammarErrorException.class);
 		a.semanticAnalysis();
 		*/
+	}
+	
+
+	@Test
+	public void testGrammarPlus() throws GrammarErrorException {
+		Grammar a = new Grammar();
+		a.setFilePath("./ficheiros_teste/grammar_plus.txt");
+
+		a.readFile();
+
+		//test start production
+		assertEquals(a.getStartProduction(), "A");
 	}
 
 
