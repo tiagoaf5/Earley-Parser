@@ -3,65 +3,82 @@ package main;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
+class State{
+	int i; // pos na frase
+	String left;
+	int current; // pos na regra da gramatica
+	ArrayList<String> right;
+	ArrayList<State> parents; 
+
+	State(String left, int current, ArrayList<String> right, int i)
+	{
+		this.i = i;
+		this.left = left;
+		this.right = right;
+		this.current = current;
+		parents = new ArrayList<State>();
+	}
+
+	public void parents(int level) //Print and visit parents
+	{
+		StringBuilder ss = new StringBuilder();
+		for(String word : right)
+			ss.append(word);
+		System.out.println(ss.toString());
+		for(State sparent : parents)
+		{
+			for(int i = 0; i <= level; i++)
+				System.out.print("   ");
+			sparent.parents(++level);
+		}
+	}
+
+	public String toString()
+	{
+		String out = left + "->";
+		for(int k = 0; k < right.size(); k++)
+		{
+			if(k==current)
+				out += "@";
+			out += right.get(k);	
+		}
+		if(right.size()==current)
+			out += "@";
+
+		return "("+out+","+i+")";
+	}
+
+	public boolean equals(Object obj) {
+		if(obj instanceof State)
+		{
+			State s2 = (State)obj;
+			if(i != s2.i)
+				return false;
+			if(current != s2.current)
+				return false;
+			if(!left.equals(s2.left))
+				return false;
+			if(right.size()!=s2.right.size())
+				return false;
+			for(int k = 0; k < right.size(); k++)
+				if(!right.get(k).equals(s2.right.get(k)))
+					return false;
+			return true;
+		}
+		return false;
+	}
+
+}
+
 public class EarleyParser {
 
-	class State{
-		int i; // pos na frase
-		String left;
-		int current; // pos na regra da gramatica
-		ArrayList<String> right;
-		//State parent = null;
-		
-		State(String left, int current, ArrayList<String> right, int i)
-		{
-			this.i = i;
-			this.left = left;
-			this.right = right;
-			this.current = current;
-		}
-		
-		public String toString()
-		{
-			String out = left + "->";
-			for(int k = 0; k < right.size(); k++)
-			{
-				if(k==current)
-					out += "@";
-				out += right.get(k);	
-			}
-			if(right.size()==current)
-				out += "@";
-			
-			return "("+out+","+i+")";
-		}
-		
-		public boolean equals(Object obj) {
-	        if(obj instanceof State)
-	        {
-	        	State s2 = (State)obj;
-	        	if(i != s2.i)
-	        		return false;
-	        	if(current != s2.current)
-	        		return false;
-	        	if(!left.equals(s2.left))
-	        		return false;
-	        	if(right.size()!=s2.right.size())
-	        		return false;
-	        	for(int k = 0; k < right.size(); k++)
-	        		if(!right.get(k).equals(s2.right.get(k)))
-	        			return false;
-	        	return true;
-	        }
-	        return false;
-	    }
 
-	}
-	
 	private Sentence words;
 	private HashMap<String,ArrayList<ArrayList<String>>> grammar;
 	private String start;
 	private ArrayList<ArrayList<State>> charts;
-	
+
 	public EarleyParser(Sentence words, Grammar grammar) {
 		this.words = words;
 		this.grammar = grammar.getGrammar();
@@ -75,24 +92,25 @@ public class EarleyParser {
 
 	public boolean run()
 	{
-		
+
 		//INICIALIZACAO
 		ArrayList<String> right_root = new ArrayList<String>(1);
 		right_root.add(start);
-		addIfNotContains(0,new State("_ROOT",0,right_root,0));
-		
+		State begin = new State("_ROOT",0,right_root,0);
+		addIfNotContains(0,begin);
+
 		for(int i = 0; i < words.getSentence().size()+1; i++)
 		{
 			System.out.println("\nWord no "+i);
 			if(i < words.getSentence().size())
 				System.out.println(words.getSentence().get(i));
-			
+
 			if(charts.get(i).isEmpty())
 			{
 				System.out.println("Nothing to do for this word");
 				return false;
 			}
-			
+
 			for(int snum = 0; snum < charts.get(i).size();snum++)
 			{
 				State s = charts.get(i).get(snum);
@@ -116,13 +134,20 @@ public class EarleyParser {
 				}
 			}
 		}
-		
-		State last_state = new State("_ROOT",1,right_root,0);
-		ArrayList<State> lastchart = charts.get(charts.size()-1);
-		return lastchart.contains(last_state);
-		
-	}
 
+		//TREE
+		State last_state = new State("_ROOT",1,right_root,0);
+		ArrayList<State> array = charts.get(charts.size()-1);
+		for(State s_root : array) 
+		{
+			if(s_root.equals(last_state))
+				s_root.parents(0);
+		}
+
+		boolean r = charts.get(charts.size()-1).contains(last_state);
+		return r;
+	}
+	
 	private void predictor(State s, int j) {
 		String B = s.right.get(s.current);
 		ArrayList<ArrayList<String>> rules = grammar.get(B);
@@ -137,23 +162,31 @@ public class EarleyParser {
 	private void scanner(State s, int j) {		
 		String B = s.right.get(s.current);
 		boolean epsilon = B.equals("\"\"");
-		
+
 		if(j > words.getSentence().size())
 			return;
-		
+
 		if(j == words.getSentence().size() && !epsilon)//only empty strings can be scanned in last chart
 			return;
-		
+
 		if(epsilon)
 		{
 			System.out.print("Scanner Action epsilon");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
-			addIfNotContains(j,snew); //adds to current chart
+			State newAdded = addIfNotContains(j,snew); //adds to current chart
+			for(State parent : s.parents){//copy parents from duplicated state
+				if(!newAdded.parents.contains(parent))
+					newAdded.parents.add(parent);
+			}
 		} else if(B.equals(words.getSentence().get(j))) 
 		{
 			System.out.print("Scanner Action");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
-			addIfNotContains(j+1,snew); //adds to next chart
+			State newAdded = addIfNotContains(j+1,snew); //adds to next charts
+			for(State parent : s.parents){//copy parents from duplicated state
+				if(!newAdded.parents.contains(parent))
+					newAdded.parents.add(parent);
+			}
 		}
 	}
 
@@ -165,15 +198,19 @@ public class EarleyParser {
 				continue;
 			if(s.left.equals(currentState.right.get(currentState.current)))
 			{
-			//	System.out.println(currentState);
 				System.out.print("Completer Action");
 				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
-				addIfNotContains(k,newState);
+				State newAdded = addIfNotContains(k,newState);
+				newAdded.parents.add(s);
+				for(State parent : currentState.parents){ //copy parents from duplicated state
+					if(!newAdded.parents.contains(parent))
+						newAdded.parents.add(parent);
+				}
 			}
 		}
 	}
-	
-	private void addIfNotContains(int num, State s)
+
+	private State addIfNotContains(int num, State s)
 	{
 		ArrayList<State> list = charts.get(num);
 		for(int i = 0; i < list.size(); i++)
@@ -181,11 +218,12 @@ public class EarleyParser {
 			if(list.get(i).equals(s))
 			{
 				System.out.println("  NOT added " + s + " to chart " + num);
-				return;
+				return list.get(i);
 			}
 		}
 		System.out.println("  Added " + s + " to chart " + num);
 		list.add(s);
+		return s;
 	}
 
 }
