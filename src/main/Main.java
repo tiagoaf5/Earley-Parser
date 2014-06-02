@@ -34,15 +34,15 @@ class MyTree {
 		while(Main.g1.containsVertex(cur)) {
 			cur = cur + " ";
 		}
-		//System.out.println(Main.i);
+		//System.out.println("Adding - " + cur);
 		//Main.i++;
 		Main.g1.addVertex(cur);
 		if(previous != null) {
-			//System.out.println("RANDOM - " + (int) (Math.random()*100000000) + ", cur = " + cur + ", previous - " + previous);
+			//System.out.println("cur = " + cur + ", previous - " + previous);
 			Main.g1.addEdge((int) (Math.random()*100000000), previous, cur);
 		}
 		for(EarleyParser.Node sibling : root.siblings) {
-			showTree(sibling,level+1, cur);
+			showTree(sibling, level+1, cur);
 		}
 	}
 }
@@ -51,8 +51,7 @@ public class Main {
 	public static Graph<String, Integer> g1;
 	public static int i = 0;
 	
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		Grammar g;
 		g1 = new DelegateForest<String, Integer>();
 
