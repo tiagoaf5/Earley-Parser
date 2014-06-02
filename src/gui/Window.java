@@ -78,9 +78,11 @@ public class Window {
 		frame.getContentPane().add(btnChooseGrammarFile);
 		
 		textArea = new JTextArea();
-		textArea.insert("olaaa", 0);
 		textArea.setBounds(186, 13, 588, 181);
+		textArea.insert("olaaa", 0);
 		frame.getContentPane().add(textArea);
+		
+		
 		
 		JButton btnChooseSentencesFile = new JButton("Choose sentences file");
 		btnChooseSentencesFile.addActionListener(new ActionListener() {
