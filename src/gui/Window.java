@@ -9,8 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-import main.Sentence;
-
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -144,18 +142,18 @@ public class Window {
 			while ((lineRead = reader.readLine()) != null)   {
 
 				String line=lineRead.trim();
-				//String[] splits=line.split("\\s+");
-				//Sentence newLine=new Sentence(splits);
-				if(text==1) {
+				if(text==1)
 					grammarFileLines.add(line);
-				} else
+				else
 					sentenceFileLines.add(line);
 			}
 			reader.close();
 			input.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("Grammar file doesn't exist!");
-			//e.printStackTrace();
+			if(text==1)
+				System.out.println("Grammar file doesn't exist!");
+			else
+				System.out.println("Sentences file doesn't exist!");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
