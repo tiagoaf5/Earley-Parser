@@ -26,10 +26,10 @@ class MyTree {
 		showTree(root,0, null);
 	}
 	private void showTree(EarleyParser.Node root,int level, String previous) {//modificar para em vez de imprimir adicionar ao grafo
-		/*System.out.print(level);
+		System.out.print(level);
 		for(int i = 0; i <= level; i++)
 			System.out.print(" ");
-		System.out.println(root.text);*/
+		System.out.println(root.text);
 		String cur = root.text;
 		while(Main.g1.containsVertex(cur)) {
 			cur = cur + " ";

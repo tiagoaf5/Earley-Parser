@@ -52,11 +52,11 @@ public class EarleyParser {
 			for(Mypair pair : parents)
 			{
 				Node son = new Node(pair.key);
-				node_parent.siblings.add(son);
 				for(State sparent : pair.values)
 				{
 					sparent.parents(son);
 				}
+				node_parent.siblings.add(son);
 			}
 			
 		}
@@ -174,8 +174,8 @@ public class EarleyParser {
 			if(s_root.equals(last_state))
 			{
 				Node root = new Node("_ROOT");
-				trees.add(root);
 				s_root.parents(root);
+				trees.add(root);
 			}
 		}
 
@@ -228,18 +228,23 @@ public class EarleyParser {
 			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j+1,snew); //adds to next charts
 			
-			for(Mypair right : s.parents){//copy parents from duplicated state
-				for(State parent : right.values)
+			//copy parents from duplicated state
+			for(Mypair pair : s.parents)
+			{
+				for(Mypair newAddedpair : newAdded.parents)
 				{
-					for(Mypair newAddedRight : newAdded.parents)
+					if(pair.key.equals(newAddedpair.key))
 					{
-						if(!newAddedRight.values.contains(parent))
+						for(State value : pair.values)
 						{
-							newAddedRight.values.add(parent);
+							if(!newAddedpair.values.contains(value))
+								newAddedpair.values.add(value);
 						}
 					}
+					break;
 				}
-		}
+			}
+			
 		}
 	}
 
@@ -262,18 +267,21 @@ public class EarleyParser {
 						break;
 					}
 				
-				for(Mypair right : currentState.parents){//copy parents from duplicated state
-					for(State parent : right.values)
+				for(Mypair pair : currentState.parents)
+				{
+					for(Mypair newAddedpair : newAdded.parents)
 					{
-						for(Mypair newAddedRight : newAdded.parents)
+						if(pair.key.equals(newAddedpair.key))
 						{
-							if(!newAddedRight.values.contains(parent))
+							for(State value : pair.values)
 							{
-								newAddedRight.values.add(parent);
+								if(!newAddedpair.values.contains(value))
+									newAddedpair.values.add(value);
 							}
 						}
+						break;
 					}
-			}
+				}
 			}
 		}
 	}
