@@ -2,15 +2,24 @@ package gui;
 
 import java.awt.EventQueue;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JTextField;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+
 import javax.swing.JTextArea;
 
 public class Window {
 
 	private JFrame frame;
+	static final JFileChooser grammarChooser = new JFileChooser();
+	static private File grammarFile;
+	static final JFileChooser sentenceChooser = new JFileChooser();
+	static private File sentenceFile;
 
 	/**
 	 * Launch the application.
@@ -47,6 +56,13 @@ public class Window {
 		JButton btnChooseGrammarFile = new JButton("Choose grammar file");
 		btnChooseGrammarFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+
+				if (grammarChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					grammarFile = grammarChooser.getSelectedFile();
+	                System.out.println("Opening grammar file: " + grammarFile.getName() + ".\n");
+				} else {
+					
+				}
 			}
 		});
 		btnChooseGrammarFile.setBounds(10, 11, 166, 29);
@@ -59,6 +75,13 @@ public class Window {
 		JButton btnChooseSentencesFile = new JButton("Choose sentences file");
 		btnChooseSentencesFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				if (sentenceChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					sentenceFile = sentenceChooser.getSelectedFile();
+	                System.out.println("Opening sentences file: " + sentenceFile.getName() + ".\n");
+				} else {
+					
+				}
 			}
 		});
 		btnChooseSentencesFile.setBounds(10, 206, 166, 29);
