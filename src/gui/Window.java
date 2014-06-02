@@ -1,25 +1,36 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import javax.swing.JTextField;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.File;
-
 import javax.swing.JTextArea;
+
+import main.Sentence;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Window {
 
 	private JFrame frame;
+	protected JTextArea textArea;
+	protected JTextArea textArea_1;
 	static final JFileChooser grammarChooser = new JFileChooser();
 	static private File grammarFile;
+	static protected ArrayList<String> grammarFileLines=new ArrayList<String>();
 	static final JFileChooser sentenceChooser = new JFileChooser();
 	static private File sentenceFile;
+	static protected ArrayList<String> sentenceFileLines=new ArrayList<String>();
 
 	/**
 	 * Launch the application.
@@ -60,15 +71,16 @@ public class Window {
 				if (grammarChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					grammarFile = grammarChooser.getSelectedFile();
 	                System.out.println("Opening grammar file: " + grammarFile.getName() + ".\n");
-				} else {
-					
+	                readContent(grammarFile, 1);
+	                updateGrammarText();
 				}
 			}
 		});
 		btnChooseGrammarFile.setBounds(10, 11, 166, 29);
 		frame.getContentPane().add(btnChooseGrammarFile);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
+		textArea.insert("olaaa", 0);
 		textArea.setBounds(186, 13, 588, 181);
 		frame.getContentPane().add(textArea);
 		
@@ -79,20 +91,74 @@ public class Window {
 				if (sentenceChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 					sentenceFile = sentenceChooser.getSelectedFile();
 	                System.out.println("Opening sentences file: " + sentenceFile.getName() + ".\n");
-				} else {
-					
+	                readContent(sentenceFile, 2);
+	                updateSentencesText();
 				}
 			}
+
+			
 		});
 		btnChooseSentencesFile.setBounds(10, 206, 166, 29);
 		frame.getContentPane().add(btnChooseSentencesFile);
 		
-		JTextArea textArea_1 = new JTextArea();
+		textArea_1 = new JTextArea();
 		textArea_1.setBounds(186, 208, 588, 160);
 		frame.getContentPane().add(textArea_1);
 		
 		JButton btnStart = new JButton("START");
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				System.out.println("- Grammar: \n"+ textArea.getText());
+				System.out.println("- Sentences: \n"+ textArea_1.getText());
+			}
+		});
 		btnStart.setBounds(375, 409, 118, 42);
 		frame.getContentPane().add(btnStart);
+	}
+	
+	protected void updateGrammarText() {
+		for(int i=0; i<grammarFileLines.size(); i++) {
+			textArea.append(grammarFileLines.get(i)+"\n");
+		}
+	}
+
+	private void updateSentencesText() {
+		for(int i=0; i<sentenceFileLines.size(); i++) {
+			textArea_1.append(sentenceFileLines.get(i)+"\n");
+		}
+		
+	}
+	
+	protected void readContent(File file, int text) {
+		
+		FileInputStream fileStream;
+
+		try {
+			fileStream = new FileInputStream(file.getPath());
+
+			DataInputStream input = new DataInputStream(fileStream);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			String lineRead;
+
+			while ((lineRead = reader.readLine()) != null)   {
+
+				String line=lineRead.trim();
+				//String[] splits=line.split("\\s+");
+				//Sentence newLine=new Sentence(splits);
+				if(text==1) {
+					grammarFileLines.add(line);
+				} else
+					sentenceFileLines.add(line);
+			}
+			reader.close();
+			input.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("Grammar file doesn't exist!");
+			//e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }
