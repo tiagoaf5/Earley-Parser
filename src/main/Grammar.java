@@ -37,8 +37,10 @@ public class Grammar {
 	private int production_index = 1;
 
 	public static void main(String[] args) {
+		
 		try {
 			new Grammar(args[0]);
+			//new Grammar("./ficheiros_teste/ggg.txt");
 		} catch (GrammarErrorException e) {
 			System.err.println(e.getMessage());
 		}
@@ -92,7 +94,7 @@ public class Grammar {
 					}
 				} 
 				else {
-					String abc ="Invalid grammar! Doesn't follow:\n Non-Terminal ::= body";
+					String abc ="Invalid grammar! Line: \""+ line + "\" doesn't follow:\n Non-Terminal ::= body";
 					throw new GrammarErrorException(abc);
 				}
 
@@ -175,7 +177,7 @@ public class Grammar {
 				if(j.charAt(0) != '\"') {
 
 					if(!j.matches("[A-Za-z][A-Za-z0-9]*|#[0-9]*"))
-						throw new GrammarErrorException("Invalid production name: \"" + j + "\"");
+						throw new GrammarErrorException("Invalid production name: \'" + j + "\' in body: \'" + body + "\'");
 					productions.add(j);
 				} /*else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
 					//Caso de ser ("ab" C)* 
@@ -209,7 +211,7 @@ public class Grammar {
 	public void semanticAnalysis() throws GrammarErrorException {
 		for(String x : productions)
 			if(!grammar.containsKey(x))
-				throw new GrammarErrorException("Production \"" + x + "\" doesn't have a body");
+				throw new GrammarErrorException("Production \'" + x + "\' doesn't have a body");
 	}
 
 	ArrayList<String> splitSpecial(String subjectString, String re) {

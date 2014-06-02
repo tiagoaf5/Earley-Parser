@@ -2,21 +2,23 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.awt.*;
-import java.awt.geom.*;
-import main.*;
 
+import javax.swing.JApplet;
+import javax.swing.JFrame;
 
-import javax.swing.*;
-
-import org.jgraph.*;
-import org.jgraph.graph.*;
-import org.jgrapht.*;
-import org.jgrapht.ext.*;
-import org.jgrapht.graph.*;
+import org.jgraph.JGraph;
+import org.jgraph.graph.AttributeMap;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.GraphConstants;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.DirectedMultigraph;
 
 class State{
 	int i; // pos na frase

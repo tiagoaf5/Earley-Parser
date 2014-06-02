@@ -287,7 +287,7 @@ public class GrammarTest {
 
 		a.readFile();
 		
-		LinkedHashSet<String> productions = a.getProductions();
+		//LinkedHashSet<String> productions = a.getProductions();
 
 		//test start production
 		assertEquals(a.getStartProduction(), "A");
