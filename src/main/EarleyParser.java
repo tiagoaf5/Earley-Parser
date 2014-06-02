@@ -24,17 +24,14 @@ class State{
 	int current; // pos na regra da gramatica
 	ArrayList<String> right;
 	ArrayList<State> parents; 
-	ListenableGraph<String, DefaultEdge> g;
-	JGraphModelAdapter<String, DefaultEdge> jgAdapter;
-	String previous;
+	static ListenableGraph<String, DefaultEdge> g;
+	static JGraphModelAdapter<String, DefaultEdge> jgAdapter;
 
-	State(String left, int current, ArrayList<String> right, int i, ListenableGraph<String, DefaultEdge> g, JGraphModelAdapter<String, DefaultEdge> jgAdapter)	{
+	State(String left, int current, ArrayList<String> right, int i)	{
 		this.i = i;
 		this.left = left;
 		this.right = right;
 		this.current = current;
-		this.g = g;
-		this.jgAdapter = jgAdapter;
 		parents = new ArrayList<State>();
 	}
 
@@ -43,35 +40,37 @@ class State{
 		for(String word : right)
 			ss.append(word);
 		System.out.println(ss.toString());
-		//boolean bela = false;
-		//if(!g.addVertex(ss.toString())) {
-			//bela = true;
-			g.addVertex(ss.toString());
-		//}
+		boolean bela = false;
+		if(!g.addVertex(ss.toString())) {
+			bela = true;
+			g.addVertex(ss.toString()+" ");
+		}
 		positionVertexAt(ss.toString(), (int) Math.floor(Math.random()%600), 75 * level);
-		if(previous != null)
-			g.addEdge(previous, ss.toString());
+		if(previous != null){
+			if(bela)
+				g.addEdge(previous, ss.toString()+" ");
+			else g.addEdge(previous, ss.toString());}
 		for(State sparent : parents) {
 			for(int i = 0; i <= level; i++)
 				System.out.print("   ");
-			//if(bela)
-			//	sparent.parents(++level, ss.toString() + " ");
-			//else
+			if(bela)
+				sparent.parents(++level, ss.toString() + " ");
+			else
 				sparent.parents(++level, ss.toString());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked") // FIXME hb 28-nov-05: See FIXME below
-    private void positionVertexAt(Object vertex, int x, int y) {
-        DefaultGraphCell cell = jgAdapter.getVertexCell(vertex);
-        AttributeMap attr = cell.getAttributes();
-        Rectangle2D bounds = GraphConstants.getBounds(attr);
-        Rectangle2D newBounds = new Rectangle2D.Double(x, y, bounds.getWidth(), bounds.getHeight());
-        GraphConstants.setBounds(attr, newBounds);
-        AttributeMap cellAttr = new AttributeMap();
-        cellAttr.put(cell, attr);
-        jgAdapter.edit(cellAttr, null, null, null);
-    }
+	private void positionVertexAt(Object vertex, int x, int y) {
+		DefaultGraphCell cell = jgAdapter.getVertexCell(vertex);
+		AttributeMap attr = cell.getAttributes();
+		Rectangle2D bounds = GraphConstants.getBounds(attr);
+		Rectangle2D newBounds = new Rectangle2D.Double(x, y, bounds.getWidth(), bounds.getHeight());
+		GraphConstants.setBounds(attr, newBounds);
+		AttributeMap cellAttr = new AttributeMap();
+		cellAttr.put(cell, attr);
+		jgAdapter.edit(cellAttr, null, null, null);
+	}
 
 	public String toString()
 	{
@@ -117,10 +116,10 @@ public class EarleyParser extends JApplet {
 	private ArrayList<ArrayList<State>> charts;
 
 	private static final long serialVersionUID = 3256444702936019250L;
-    private static final Color DEFAULT_BG_COLOR = Color.decode("#FAFBFF");
-    private static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
-    private JGraphModelAdapter<String, DefaultEdge> jgAdapter;
-    private ListenableGraph<String, DefaultEdge> g;
+	private static final Color DEFAULT_BG_COLOR = Color.decode("#FAFBFF");
+	private static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
+	private JGraphModelAdapter<String, DefaultEdge> jgAdapter;
+	private ListenableGraph<String, DefaultEdge> g;
 
 	public EarleyParser(Sentence words, Grammar grammar) {
 		this.words = words;
@@ -136,17 +135,19 @@ public class EarleyParser extends JApplet {
 		//INICIALIZACAO
 		ArrayList<String> right_root = new ArrayList<String>(1);
 		right_root.add(start);
-		State begin = new State("_ROOT",0,right_root,0, g, jgAdapter);
+		State begin = new State("_ROOT",0,right_root,0);
 		addIfNotContains(0,begin);
-	
+
 		g = new ListenableDirectedMultigraph<String, DefaultEdge>(DefaultEdge.class);
-        jgAdapter = new JGraphModelAdapter<String, DefaultEdge>(g);
+		State.g=g;
+		jgAdapter = new JGraphModelAdapter<String, DefaultEdge>(g);
+		State.jgAdapter = jgAdapter;
 
-        JGraph jgraph = new JGraph(jgAdapter);
+		JGraph jgraph = new JGraph(jgAdapter);
 
-        adjustDisplaySettings(jgraph);
-        getContentPane().add(jgraph);
-        resize(DEFAULT_SIZE);
+		adjustDisplaySettings(jgraph);
+		getContentPane().add(jgraph);
+		resize(DEFAULT_SIZE);
 
 		for(int i = 0; i < words.getSentence().size()+1; i++) {
 			System.out.println("\nWord no "+i);
@@ -184,7 +185,7 @@ public class EarleyParser extends JApplet {
 		}
 
 		//TREE
-		State last_state = new State("_ROOT",1,right_root,0, g, jgAdapter);
+		State last_state = new State("_ROOT",1,right_root,0);
 		ArrayList<State> array = charts.get(charts.size()-1);
 		for(State s_root : array) 
 		{
@@ -195,39 +196,39 @@ public class EarleyParser extends JApplet {
 		boolean r = charts.get(charts.size()-1).contains(last_state);
 		return r;
 	}
-	
+
 	private void predictor(State s, int j) {
 		String B = s.right.get(s.current);
 		ArrayList<ArrayList<String>> rules = grammar.get(B);
 		for(ArrayList<String> rule : rules)
 		{
 			System.out.print("Predictor Action");
-			State snew = new State(B,0,rule,j, g, jgAdapter);
+			State snew = new State(B,0,rule,j);
 			addIfNotContains(j,snew);
 		}
 	}
-	
+
 	public static void main(String [] args) {
-        //JGraphAdapterDemo applet = new JGraphAdapterDemo();
-        //applet.init();
-        
-        Grammar g2;
+		//JGraphAdapterDemo applet = new JGraphAdapterDemo();
+		//applet.init();
+
+		Grammar g2;
 		try {
 			g2 = new Grammar("./ficheiros_teste/grammar1.txt");
 			Lines lines=new Lines("./ficheiros_teste/sentences1.txt");
 			EarleyParser ep = new EarleyParser(lines.getLines().get(0), g2);
 			boolean result = ep.run();
-			
+
 			JFrame frame = new JFrame();
-	        frame.getContentPane().add(ep);
-	        frame.setTitle("JGraphT Adapter to JGraph Demo");
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        frame.pack();
-	        frame.setVisible(true);
+			frame.getContentPane().add(ep);
+			frame.setTitle("JGraphT Adapter to JGraph Demo");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.pack();
+			frame.setVisible(true);
 		} catch (GrammarErrorException e) {
 			e.printStackTrace();
 		}
-    }
+	}
 
 	private void scanner(State s, int j) {		
 		String B = s.right.get(s.current);
@@ -242,7 +243,7 @@ public class EarleyParser extends JApplet {
 		if(epsilon)
 		{
 			System.out.print("Scanner Action epsilon");
-			State snew = new State(s.left,s.current+1,s.right,s.i, g, jgAdapter);
+			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j,snew); //adds to current chart
 			for(State parent : s.parents){//copy parents from duplicated state
 				if(!newAdded.parents.contains(parent))
@@ -251,7 +252,7 @@ public class EarleyParser extends JApplet {
 		} else if(B.equals(words.getSentence().get(j))) 
 		{
 			System.out.print("Scanner Action");
-			State snew = new State(s.left,s.current+1,s.right,s.i, g, jgAdapter);
+			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j+1,snew); //adds to next charts
 			for(State parent : s.parents){//copy parents from duplicated state
 				if(!newAdded.parents.contains(parent))
@@ -269,7 +270,7 @@ public class EarleyParser extends JApplet {
 			if(s.left.equals(currentState.right.get(currentState.current)))
 			{
 				System.out.print("Completer Action");
-				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i, g, jgAdapter);
+				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
 				State newAdded = addIfNotContains(k,newState);
 				newAdded.parents.add(s);
 				for(State parent : currentState.parents){ //copy parents from duplicated state
@@ -295,29 +296,29 @@ public class EarleyParser extends JApplet {
 		list.add(s);
 		return s;
 	}
-	
-	private void adjustDisplaySettings(JGraph jg) {
-        jg.setPreferredSize(DEFAULT_SIZE);
-        Color c = DEFAULT_BG_COLOR;
-        String colorStr = null;
-        try {
-            colorStr = getParameter("bgcolor");
-        } catch (Exception e) {
-        }
-        if (colorStr != null) {
-            c = Color.decode(colorStr);
-        }
-        jg.setBackground(c);
-    }
 
-    
-    /**
-     * a listenable directed multigraph that allows loops and parallel edges.
-     */
-    private static class ListenableDirectedMultigraph<V, E> extends DefaultListenableGraph<V, E> implements DirectedGraph<V, E> {
-        private static final long serialVersionUID = 1L;
-        ListenableDirectedMultigraph(Class<E> edgeClass) {
-            super(new DirectedMultigraph<V, E>(edgeClass));
-        }
-    }
+	private void adjustDisplaySettings(JGraph jg) {
+		jg.setPreferredSize(DEFAULT_SIZE);
+		Color c = DEFAULT_BG_COLOR;
+		String colorStr = null;
+		try {
+			colorStr = getParameter("bgcolor");
+		} catch (Exception e) {
+		}
+		if (colorStr != null) {
+			c = Color.decode(colorStr);
+		}
+		jg.setBackground(c);
+	}
+
+
+	/**
+	 * a listenable directed multigraph that allows loops and parallel edges.
+	 */
+	private static class ListenableDirectedMultigraph<V, E> extends DefaultListenableGraph<V, E> implements DirectedGraph<V, E> {
+		private static final long serialVersionUID = 1L;
+		ListenableDirectedMultigraph(Class<E> edgeClass) {
+			super(new DirectedMultigraph<V, E>(edgeClass));
+		}
+	}
 }
