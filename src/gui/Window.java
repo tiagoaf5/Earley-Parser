@@ -17,12 +17,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import java.awt.Color;
 
 public class Window {
 
 	private JFrame frame;
 	protected JTextArea textArea;
 	protected JTextArea textArea_1;
+	protected JTextArea textArea_2;
 	static final JFileChooser grammarChooser = new JFileChooser();
 	static private File grammarFile;
 	static protected ArrayList<String> grammarFileLines=new ArrayList<String>();
@@ -98,11 +101,11 @@ public class Window {
 
 			
 		});
-		btnChooseSentencesFile.setBounds(10, 206, 166, 29);
+		btnChooseSentencesFile.setBounds(10, 283, 166, 29);
 		frame.getContentPane().add(btnChooseSentencesFile);
 		
 		textArea_1 = new JTextArea();
-		textArea_1.setBounds(186, 208, 588, 160);
+		textArea_1.setBounds(186, 285, 588, 113);
 		frame.getContentPane().add(textArea_1);
 		
 		JButton btnStart = new JButton("START");
@@ -115,6 +118,16 @@ public class Window {
 		});
 		btnStart.setBounds(375, 409, 118, 42);
 		frame.getContentPane().add(btnStart);
+		
+		textArea_2 = new JTextArea();
+		textArea_2.setBounds(232, 205, 541, 57);
+		frame.getContentPane().add(textArea_2);
+		
+		JLabel lblGrammarErrorLog = new JLabel("Grammar error log:");
+		lblGrammarErrorLog.setEnabled(false);
+		lblGrammarErrorLog.setForeground(Color.RED);
+		lblGrammarErrorLog.setBounds(102, 205, 118, 14);
+		frame.getContentPane().add(lblGrammarErrorLog);
 	}
 	
 	protected void updateGrammarText() {
@@ -128,6 +141,10 @@ public class Window {
 			textArea_1.append(sentenceFileLines.get(i)+"\n");
 		}
 		
+	}
+	
+	protected void updateErrorLog(String text) {
+		textArea.append(text + "\n");
 	}
 	
 	protected void readContent(File file, int text) {
