@@ -3,11 +3,14 @@ package gui;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
+import javax.swing.JLabel;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -17,8 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import javax.swing.JLabel;
-import java.awt.Color;
 
 public class Window {
 
@@ -83,9 +84,18 @@ public class Window {
 		textArea = new JTextArea();
 		textArea.setBounds(186, 13, 588, 181);
 		textArea.insert("olaaa", 0);
+		textArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		frame.getContentPane().add(textArea);
 		
-		
+		textArea_2 = new JTextArea();
+		textArea_2.setBounds(232, 205, 541, 57);
+		frame.getContentPane().add(textArea_2);
+		JLabel lblGrammarErrorLog = new JLabel("Grammar error log:");
+		lblGrammarErrorLog.setEnabled(false);
+		lblGrammarErrorLog.setForeground(Color.red);
+		lblGrammarErrorLog.setBounds(102, 205, 118, 14);
+		textArea_2.setBorder(BorderFactory.createLineBorder(Color.gray));
+		frame.getContentPane().add(lblGrammarErrorLog);
 		
 		JButton btnChooseSentencesFile = new JButton("Choose sentences file");
 		btnChooseSentencesFile.addActionListener(new ActionListener() {
@@ -98,14 +108,13 @@ public class Window {
 	                updateSentencesText();
 				}
 			}
-
-			
 		});
 		btnChooseSentencesFile.setBounds(10, 283, 166, 29);
 		frame.getContentPane().add(btnChooseSentencesFile);
 		
 		textArea_1 = new JTextArea();
 		textArea_1.setBounds(186, 285, 588, 113);
+		textArea_1.setBorder(BorderFactory.createLineBorder(Color.black));
 		frame.getContentPane().add(textArea_1);
 		
 		JButton btnStart = new JButton("START");
@@ -114,22 +123,24 @@ public class Window {
 				
 				System.out.println("- Grammar: \n"+ textArea.getText());
 				System.out.println("- Sentences: \n"+ textArea_1.getText());
+				
+				startEarleyParser();
 			}
 		});
 		btnStart.setBounds(375, 409, 118, 42);
 		frame.getContentPane().add(btnStart);
-		
-		textArea_2 = new JTextArea();
-		textArea_2.setBounds(232, 205, 541, 57);
-		frame.getContentPane().add(textArea_2);
-		
-		JLabel lblGrammarErrorLog = new JLabel("Grammar error log:");
-		lblGrammarErrorLog.setEnabled(false);
-		lblGrammarErrorLog.setForeground(Color.RED);
-		lblGrammarErrorLog.setBounds(102, 205, 118, 14);
-		frame.getContentPane().add(lblGrammarErrorLog);
 	}
 	
+	protected void startEarleyParser() {
+		/*
+		try {
+			
+		} catch(GrammarErrorException e) {
+			updateErrorLog(e.getMessage());
+		}*/
+		
+	}
+
 	protected void updateGrammarText() {
 		for(int i=0; i<grammarFileLines.size(); i++) {
 			textArea.append(grammarFileLines.get(i)+"\n");
