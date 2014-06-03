@@ -1,157 +1,139 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
+import main.EarleyParser.State.Mypair;
 
-import org.jgraph.JGraph;
-import org.jgraph.graph.AttributeMap;
-import org.jgraph.graph.DefaultGraphCell;
-import org.jgraph.graph.GraphConstants;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.ListenableGraph;
-import org.jgrapht.ext.JGraphModelAdapter;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.DirectedMultigraph;
-
-class State{
-	int i; // pos na frase
-	String left;
-	int current; // pos na regra da gramatica
-	ArrayList<String> right;
-	ArrayList<State> parents; 
-	static ListenableGraph<String, DefaultEdge> g;
-	static JGraphModelAdapter<String, DefaultEdge> jgAdapter;
-
-	State(String left, int current, ArrayList<String> right, int i)	{
-		this.i = i;
-		this.left = left;
-		this.right = right;
-		this.current = current;
-		parents = new ArrayList<State>();
-	}
-
-	public void parents(int level, String previous) {//Print and visit parents
-		StringBuilder ss = new StringBuilder();
-		for(String word : right)
-			ss.append(word);
-		System.out.println(ss.toString());
-		boolean bela = false;
-		if(!g.addVertex(ss.toString())) {
-			bela = true;
-			g.addVertex(ss.toString()+" ");
-		}
-		positionVertexAt(ss.toString(), (int) Math.floor(Math.random()%600), 75 * level);
-		if(previous != null){
-			if(bela)
-				g.addEdge(previous, ss.toString()+" ");
-			else g.addEdge(previous, ss.toString());}
-		for(State sparent : parents) {
-			for(int i = 0; i <= level; i++)
-				System.out.print("   ");
-			if(bela)
-				sparent.parents(++level, ss.toString() + " ");
-			else
-				sparent.parents(++level, ss.toString());
-		}
-	}
-
-	@SuppressWarnings("unchecked") // FIXME hb 28-nov-05: See FIXME below
-	private void positionVertexAt(Object vertex, int x, int y) {
-		DefaultGraphCell cell = jgAdapter.getVertexCell(vertex);
-		AttributeMap attr = cell.getAttributes();
-		Rectangle2D bounds = GraphConstants.getBounds(attr);
-		Rectangle2D newBounds = new Rectangle2D.Double(x, y, bounds.getWidth(), bounds.getHeight());
-		GraphConstants.setBounds(attr, newBounds);
-		AttributeMap cellAttr = new AttributeMap();
-		cellAttr.put(cell, attr);
-		jgAdapter.edit(cellAttr, null, null, null);
-	}
-
-	public String toString()
-	{
-		String out = left + "->";
-		for(int k = 0; k < right.size(); k++)
+public class EarleyParser {
+	
+	class Node{
+		String text;
+		ArrayList<Node> siblings = new ArrayList<Node>();
+		
+		Node(String s)
 		{
-			if(k==current)
-				out += "@";
-			out += right.get(k);	
+			text =s;
 		}
-		if(right.size()==current)
-			out += "@";
-
-		return "("+out+","+i+")";
 	}
 
-	public boolean equals(Object obj) {
-		if(obj instanceof State)
+	class State{
+		class Mypair{ //need this to keep the order
+			String key;
+			ArrayList<State> values;
+			Mypair(String key, ArrayList<State> values)
+			{
+				this.key = key;
+				this.values = values;
+			}
+		}
+		
+		int i; // pos na frase
+		String left;
+		int current; // pos na regra da gramatica
+		ArrayList<String> right;
+		ArrayList<Mypair> parents; // para cada right, tem varios estados pais 
+
+		State(String left, int current, ArrayList<String> right, int i)
 		{
-			State s2 = (State)obj;
-			if(i != s2.i)
-				return false;
-			if(current != s2.current)
-				return false;
-			if(!left.equals(s2.left))
-				return false;
-			if(right.size()!=s2.right.size())
-				return false;
+			this.i = i;
+			this.left = left;
+			this.right = right;
+			this.current = current;
+			parents = new ArrayList<Mypair>();
+			for(String r : right)
+			{
+				parents.add(new Mypair(r,new ArrayList<State>()));
+			}
+		}
+
+		public void parents(Node node_parent) //visit parents
+		{
+			for(Mypair pair : parents)
+			{
+				Node son = new Node(pair.key);
+				for(State sparent : pair.values)
+				{
+					sparent.parents(son);
+				}
+				node_parent.siblings.add(son);
+			}
+			
+		}
+
+		public String toString()
+		{
+			String out = left + "->";
 			for(int k = 0; k < right.size(); k++)
-				if(!right.get(k).equals(s2.right.get(k)))
-					return false;
-			return true;
+			{
+				if(k==current)
+					out += "@";
+				out += right.get(k);	
+			}
+			if(right.size()==current)
+				out += "@";
+
+			return "("+out+","+i+")";
 		}
-		return false;
+
+		public boolean equals(Object obj) {
+			if(obj instanceof State)
+			{
+				State s2 = (State)obj;
+				if(i != s2.i)
+					return false;
+				if(current != s2.current)
+					return false;
+				if(!left.equals(s2.left))
+					return false;
+				if(right.size()!=s2.right.size())
+					return false;
+				for(int k = 0; k < right.size(); k++)
+					if(!right.get(k).equals(s2.right.get(k)))
+						return false;
+				return true;
+			}
+			return false;
+		}
+
 	}
 
-}
-
-public class EarleyParser extends JApplet {
 	private Sentence words;
 	private HashMap<String,ArrayList<ArrayList<String>>> grammar;
 	private String start;
 	private ArrayList<ArrayList<State>> charts;
-
-	private static final long serialVersionUID = 3256444702936019250L;
-	private static final Color DEFAULT_BG_COLOR = Color.decode("#FAFBFF");
-	private static final Dimension DEFAULT_SIZE = new Dimension(800, 600);
-	private JGraphModelAdapter<String, DefaultEdge> jgAdapter;
-	private ListenableGraph<String, DefaultEdge> g;
+	private ArrayList<Node> trees;
 
 	public EarleyParser(Sentence words, Grammar grammar) {
 		this.words = words;
 		this.grammar = grammar.getGrammar();
 		this.start = grammar.getStartProduction();
 		this.charts = new ArrayList<ArrayList<State>>(words.getSentence().size()+1);
-		for(int i = 0; i < words.getSentence().size()+1; i++) {
+		for(int i = 0; i < words.getSentence().size()+1; i++)
+		{
 			this.charts.add(new ArrayList<State>());
 		}
 	}
+	
+	public ArrayList<Node> getTrees()
+	{
+		return trees;
+	}
 
-	public boolean run() {
+	public boolean run()
+	{
+
 		//INICIALIZACAO
 		ArrayList<String> right_root = new ArrayList<String>(1);
 		right_root.add(start);
 		State begin = new State("_ROOT",0,right_root,0);
 		addIfNotContains(0,begin);
 
-		g = new ListenableDirectedMultigraph<String, DefaultEdge>(DefaultEdge.class);
-		State.g=g;
-		jgAdapter = new JGraphModelAdapter<String, DefaultEdge>(g);
-		State.jgAdapter = jgAdapter;
-
-		JGraph jgraph = new JGraph(jgAdapter);
-
-		adjustDisplaySettings(jgraph);
-		getContentPane().add(jgraph);
-		resize(DEFAULT_SIZE);
-
-		for(int i = 0; i < words.getSentence().size()+1; i++) {
+		for(int i = 0; i < words.getSentence().size()+1; i++)
+		{
 			System.out.println("\nWord no "+i);
 			if(i < words.getSentence().size())
 				System.out.println(words.getSentence().get(i));
@@ -189,16 +171,21 @@ public class EarleyParser extends JApplet {
 		//TREE
 		State last_state = new State("_ROOT",1,right_root,0);
 		ArrayList<State> array = charts.get(charts.size()-1);
+		trees = new ArrayList<Node>();
 		for(State s_root : array) 
 		{
 			if(s_root.equals(last_state))
-				s_root.parents(0, null);
+			{
+				Node root = new Node("_ROOT");
+				s_root.parents(root);
+				trees.add(root);
+			}
 		}
 
 		boolean r = charts.get(charts.size()-1).contains(last_state);
 		return r;
 	}
-
+	
 	private void predictor(State s, int j) {
 		String B = s.right.get(s.current);
 		ArrayList<ArrayList<String>> rules = grammar.get(B);
@@ -207,28 +194,6 @@ public class EarleyParser extends JApplet {
 			System.out.print("Predictor Action");
 			State snew = new State(B,0,rule,j);
 			addIfNotContains(j,snew);
-		}
-	}
-
-	public static void main(String [] args) {
-		//JGraphAdapterDemo applet = new JGraphAdapterDemo();
-		//applet.init();
-
-		Grammar g2;
-		try {
-			g2 = new Grammar("./ficheiros_teste/grammar1.txt");
-			Lines lines=new Lines("./ficheiros_teste/sentences1.txt");
-			EarleyParser ep = new EarleyParser(lines.getLines().get(0), g2);
-			boolean result = ep.run();
-
-			JFrame frame = new JFrame();
-			frame.getContentPane().add(ep);
-			frame.setTitle("JGraphT Adapter to JGraph Demo");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.pack();
-			frame.setVisible(true);
-		} catch (GrammarErrorException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -247,19 +212,42 @@ public class EarleyParser extends JApplet {
 			System.out.print("Scanner Action epsilon");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j,snew); //adds to current chart
-			for(State parent : s.parents){//copy parents from duplicated state
-				if(!newAdded.parents.contains(parent))
-					newAdded.parents.add(parent);
+			
+			for(Mypair right : s.parents){//copy parents from duplicated state
+					for(State parent : right.values)
+					{
+						for(Mypair newAddedRight : newAdded.parents)
+						{
+							if(!newAddedRight.values.contains(parent))
+							{
+								newAddedRight.values.add(parent);
+							}
+						}
+					}
 			}
 		} else if(B.equals(words.getSentence().get(j))) 
 		{
 			System.out.print("Scanner Action");
 			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j+1,snew); //adds to next charts
-			for(State parent : s.parents){//copy parents from duplicated state
-				if(!newAdded.parents.contains(parent))
-					newAdded.parents.add(parent);
+			
+			//copy parents from duplicated state
+			for(Mypair pair : s.parents)
+			{
+				for(Mypair newAddedpair : newAdded.parents)
+				{
+					if(pair.key.equals(newAddedpair.key))
+					{
+						for(State value : pair.values)
+						{
+							if(!newAddedpair.values.contains(value))
+								newAddedpair.values.add(value);
+						}
+					}
+					break;
+				}
 			}
+			
 		}
 	}
 
@@ -274,14 +262,33 @@ public class EarleyParser extends JApplet {
 				System.out.print("Completer Action");
 				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
 				State newAdded = addIfNotContains(k,newState);
-				newAdded.parents.add(s);
-				for(State parent : currentState.parents){ //copy parents from duplicated state
-					if(!newAdded.parents.contains(parent))
-						newAdded.parents.add(parent);
+				//newAdded.parents.add(s);
+				for(Mypair pair : newAdded.parents)
+					if(pair.key.equals(s.left))
+					{
+						pair.values.add(s);
+						break;
+					}
+				
+				for(Mypair pair : currentState.parents)
+				{
+					for(Mypair newAddedpair : newAdded.parents)
+					{
+						if(pair.key.equals(newAddedpair.key))
+						{
+							for(State value : pair.values)
+							{
+								if(!newAddedpair.values.contains(value))
+									newAddedpair.values.add(value);
+							}
+						}
+						break;
+					}
 				}
 			}
 		}
 	}
+
 
 	private State addIfNotContains(int num, State s)
 	{
@@ -299,28 +306,4 @@ public class EarleyParser extends JApplet {
 		return s;
 	}
 
-	private void adjustDisplaySettings(JGraph jg) {
-		jg.setPreferredSize(DEFAULT_SIZE);
-		Color c = DEFAULT_BG_COLOR;
-		String colorStr = null;
-		try {
-			colorStr = getParameter("bgcolor");
-		} catch (Exception e) {
-		}
-		if (colorStr != null) {
-			c = Color.decode(colorStr);
-		}
-		jg.setBackground(c);
-	}
-
-
-	/**
-	 * a listenable directed multigraph that allows loops and parallel edges.
-	 */
-	private static class ListenableDirectedMultigraph<V, E> extends DefaultListenableGraph<V, E> implements DirectedGraph<V, E> {
-		private static final long serialVersionUID = 1L;
-		ListenableDirectedMultigraph(Class<E> edgeClass) {
-			super(new DirectedMultigraph<V, E>(edgeClass));
-		}
-	}
 }
