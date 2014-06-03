@@ -283,6 +283,7 @@ public class Window {
 					}
 
 
+					@SuppressWarnings({ "unchecked", "rawtypes" })
 					Layout<String, String> layout = new TreeLayout<String, String>((Forest) g1);
 					//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
 					// The BasicVisualizationServer<V,E> is parameterized by the vertex and edge types
@@ -299,7 +300,7 @@ public class Window {
 					BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
 					vv.setGraphLayout(layout);
 					vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
-					vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+					vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
 					vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 
 					JFrame frame = new JFrame("Tree Visualization  -  Sentence " + (i+1));

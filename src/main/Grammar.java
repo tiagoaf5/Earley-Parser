@@ -85,7 +85,8 @@ public class Grammar {
 
 
 	private void reader(Reader in) throws GrammarErrorException {
-		try (BufferedReader br = new BufferedReader(in)) {
+		try (@SuppressWarnings("resource")
+		BufferedReader br = new BufferedReader(in)) {
 			String line = br.readLine();
 
 			int cont = 0;
@@ -123,10 +124,12 @@ public class Grammar {
 				line = br.readLine();
 				cont++;
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
 		}
-
+		
 		System.out.println("\nGrammar - " + grammar);
 		System.out.println("Non-Terminals - " + productions);
 		System.out.println("StartProduction - " + startProduction);

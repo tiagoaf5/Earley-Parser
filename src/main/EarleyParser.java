@@ -1,11 +1,8 @@
 package main;
 
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.JApplet;
-import javax.swing.JFrame;
 import main.EarleyParser.State.Mypair;
 
 public class EarleyParser {
