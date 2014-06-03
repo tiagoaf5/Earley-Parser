@@ -303,7 +303,7 @@ public class Window {
 					vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 
 					JFrame frame = new JFrame("Tree Visualization  -  Sentence " + (i+1));
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					frame.getContentPane().add(vv); 
 					frame.pack();
 					frame.setVisible(true);  
@@ -312,12 +312,12 @@ public class Window {
 
 			for (int i = 0; i < b.length; i++)
 				if(b[i]) {
-					addToLog("Phrase " + (i + 1) + " is valid!", "green");
-					System.out.println("Phrase " + (i + 1) + " is valid!");
+					addToLog("Sentence " + (i + 1) + " is valid!", "green");
+					System.out.println("Sentence " + (i + 1) + " is valid!");
 				}
 				else {
-					addToLog("Phrase " + (i + 1) + " is invalid!", "maroon");
-					System.err.println("Phrase " + (i + 1) + " is invalid!");
+					addToLog("Sentence " + (i + 1) + " is invalid!", "maroon");
+					System.err.println("Sentence " + (i + 1) + " is invalid!");
 				}
 
 
