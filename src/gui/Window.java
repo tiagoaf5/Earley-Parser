@@ -16,14 +16,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -191,6 +189,7 @@ public class Window {
 		JButton btnSaveGrammar = new JButton("Save grammar");
 		btnSaveGrammar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showSaveDialog(chooser) != JFileChooser.APPROVE_OPTION)
 					return;
@@ -200,10 +199,15 @@ public class Window {
 
 				FileWriter writer = null;
 				try {
-					writer = new FileWriter(file);
+					
+					if(file.getName().endsWith(".txt"))
+						writer = new FileWriter(file);
+					else
+						writer = new FileWriter(file+".txt");
+					
 					textArea.write(writer);
 				} catch (IOException ex) {
-					JOptionPane.showMessageDialog(chooser, "File Not Saved", "ERROR", JOptionPane.ERROR_MESSAGE);
+					addToLog("Grammar file not saved. Try again", "grey");
 				} finally {
 					if (writer != null) {
 						try {
@@ -230,10 +234,13 @@ public class Window {
 
 				FileWriter writer = null;
 				try {
-					writer = new FileWriter(file);
+					if(file.getName().endsWith(".txt"))
+						writer = new FileWriter(file);
+					else
+						writer = new FileWriter(file+".txt");
 					textArea1.write(writer);
 				} catch (IOException ex) {
-					JOptionPane.showMessageDialog(chooser, "File Not Saved", "ERROR", JOptionPane.ERROR_MESSAGE);
+					addToLog("Sentences file not saved. Try again", "grey");
 				} finally {
 					if (writer != null) {
 						try {
