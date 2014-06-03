@@ -12,6 +12,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -189,7 +191,27 @@ public class Window {
 		JButton btnSaveGrammar = new JButton("Save grammar");
 		btnSaveGrammar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-			
+				JFileChooser chooser = new JFileChooser();
+				if (chooser.showSaveDialog(chooser) != JFileChooser.APPROVE_OPTION)
+					return;
+				File file = chooser.getSelectedFile();
+				if (file == null)
+					return;
+
+				FileWriter writer = null;
+				try {
+					writer = new FileWriter(file);
+					textArea.write(writer);
+				} catch (IOException ex) {
+					JOptionPane.showMessageDialog(chooser, "File Not Saved", "ERROR", JOptionPane.ERROR_MESSAGE);
+				} finally {
+					if (writer != null) {
+						try {
+							writer.close();
+						} catch (IOException x) {
+						}
+					}
+				}
 			}
 		});
 		btnSaveGrammar.setBounds(39, 51, 137, 23);
@@ -198,8 +220,28 @@ public class Window {
 		JButton btnSaveSentences = new JButton("Save sentences");
 		btnSaveSentences.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-			
+
+				JFileChooser chooser = new JFileChooser();
+				if (chooser.showSaveDialog(chooser) != JFileChooser.APPROVE_OPTION)
+					return;
+				File file = chooser.getSelectedFile();
+				if (file == null)
+					return;
+
+				FileWriter writer = null;
+				try {
+					writer = new FileWriter(file);
+					textArea1.write(writer);
+				} catch (IOException ex) {
+					JOptionPane.showMessageDialog(chooser, "File Not Saved", "ERROR", JOptionPane.ERROR_MESSAGE);
+				} finally {
+					if (writer != null) {
+						try {
+							writer.close();
+						} catch (IOException x) {
+						}
+					}
+				}
 			}
 		});
 		btnSaveSentences.setBounds(39, 250, 137, 23);
