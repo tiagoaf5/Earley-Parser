@@ -59,7 +59,7 @@ public class Window {
 	static protected String sentenceFileLines=new String();
 
 	private StringBuilder log;
-	public static Graph<String, Integer> g1;
+	public Graph<String, Integer> g;
 
 	/**
 	 * Launch the application.
@@ -81,6 +81,7 @@ public class Window {
 	 * Create the application.
 	 */
 	public Window() {
+		g = new DelegateForest<String, Integer>(new DirectedOrderedSparseMultigraph<String, Integer>());
 		initialize();
 	}
 
@@ -271,45 +272,45 @@ public class Window {
 				ep = new EarleyParser(sentences.get(i), grammar);
 				b[i] = ep.run();
 				if (b[i]) {
-					g1 = new DelegateForest<String, Integer>(new DirectedOrderedSparseMultigraph<String, Integer>());
 					ArrayList<MyTree> trees = new ArrayList<MyTree>();
 
-					for(EarleyParser.Node node : ep.getTrees())	{
-						trees.add(new MyTree(node));
+					for(int k = 0; k < ep.getTrees().size(); k++)	{
+						trees.add(new MyTree(ep.getTrees().get(k),g,"Sentence "+(i+1)+" - tree "+(k+1)));
 					};
 
 					for(MyTree tree : trees) {
 						tree.show();
-					}
-
-
-					@SuppressWarnings({ "unchecked", "rawtypes" })
-					Layout<String, String> layout = new TreeLayout<String, String>((Forest) g1);
-					//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
-					// The BasicVisualizationServer<V,E> is parameterized by the vertex and edge types
-
-					Transformer<String, Paint> vertexPaint = new Transformer<String, Paint>() {
-						public Paint transform(String s) {
-							if(s.startsWith("\""))
-								return Color.CYAN;
-							else
-								return Color.BLUE;
-						}
-					};
-
-					BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
-					vv.setGraphLayout(layout);
-					vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
-					vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
-					vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-
-					JFrame frame = new JFrame("Tree Visualization  -  Sentence " + (i+1));
-					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					frame.getContentPane().add(vv); 
-					frame.pack();
-					frame.setVisible(true);  
+					}  
 				}
 			}
+			
+
+
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			Layout<String, String> layout = new TreeLayout<String, String>((Forest) g);
+			//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
+			// The BasicVisualizationServer<V,E> is parameterized by the vertex and edge types
+
+			Transformer<String, Paint> vertexPaint = new Transformer<String, Paint>() {
+				public Paint transform(String s) {
+					if(s.startsWith("\""))
+						return Color.CYAN;
+					else
+						return Color.BLUE;
+				}
+			};
+
+			BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
+			vv.setGraphLayout(layout);
+			vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
+			vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
+			vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+
+			JFrame frame = new JFrame("Tree Visualization");
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.getContentPane().add(vv); 
+			frame.pack();
+			frame.setVisible(true);
 
 			for (int i = 0; i < b.length; i++)
 				if(b[i]) {

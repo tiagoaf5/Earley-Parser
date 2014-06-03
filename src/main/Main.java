@@ -1,4 +1,4 @@
-package main;
+/*package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
-/*class MyTree {
+class MyTree {
 	EarleyParser.Node root;
 	private int edgeid;
 	//adicionar aqui objectos do grafo
@@ -44,7 +44,7 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 		}
 	}
 }
-*/
+
 public class Main {
 	public static Graph<String, Integer> g1;
 	public static int i = 0;
@@ -98,4 +98,4 @@ public class Main {
         frame.pack();
         frame.setVisible(true);  
 	}
-}
+}*/

@@ -1,13 +1,15 @@
 package main;
 
-import gui.Window;
+import edu.uci.ics.jung.graph.Graph;
 
 public class MyTree {
 	EarleyParser.Node root;
-	private int edgeid;
-	//adicionar aqui objectos do grafo
-	public MyTree(EarleyParser.Node n) {
+	static private int edgeid = 0;
+	Graph<String, Integer> graph;
+	public MyTree(EarleyParser.Node n,Graph<String, Integer> g,String rootName) {
 		root = n;
+		graph = g;
+		root.text = rootName;
 	}
 	public void show() {
 		showTree(root,0, null);
@@ -18,13 +20,13 @@ public class MyTree {
 			System.out.print(" ");
 		System.out.println(root.text);*/
 		String cur = root.text;
-		while(Window.g1.containsVertex(cur)) {
+		while(graph.containsVertex(cur)) {
 			cur = cur + " ";
 		}
 
-		Window.g1.addVertex(cur);
+		graph.addVertex(cur);
 		if(previous != null) {
-			Window.g1.addEdge(edgeid++, previous, cur);
+			graph.addEdge(edgeid++, previous, cur);
 		}
 		for(EarleyParser.Node sibling : root.siblings) {
 			showTree(sibling, level+1, cur);
