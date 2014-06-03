@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 import main.*;
+
 import org.junit.Test;
 
 public class EarleyTest {
