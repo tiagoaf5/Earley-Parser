@@ -50,10 +50,10 @@ public class Window {
 	protected JTextArea textArea;
 	protected JTextArea textArea1;
 	protected JTextPane textArea2;
-	static final JFileChooser grammarChooser = new JFileChooser();
+	static final JFileChooser grammarChooser = new JFileChooser(".");
 	static private File grammarFile;
 	static protected String grammarFileLines=new String();
-	static final JFileChooser sentenceChooser = new JFileChooser();
+	static final JFileChooser sentenceChooser = new JFileChooser(".");
 	static private File sentenceFile;
 	static protected String sentenceFileLines=new String();
 
@@ -94,9 +94,6 @@ public class Window {
 	private void initialize() {
 		log = new StringBuilder();
 		log.append("<html>");
-
-		grammarChooser.setCurrentDirectory(new File("."));
-		sentenceChooser.setCurrentDirectory(new File("."));
 
 		frmEarleyParser = new JFrame();
 		frmEarleyParser.setTitle("Earley Parser");
