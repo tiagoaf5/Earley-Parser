@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,25 +21,29 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 
 import main.EarleyParser;
 import main.Grammar;
 import main.GrammarErrorException;
 import main.Lines;
+import main.Sentence;
 
 public class Window {
 
-	private JFrame frame;
+	private JFrame frmEarleyParser;
 	protected JTextArea textArea;
 	protected JTextArea textArea1;
-	protected JTextArea textArea2;
+	protected JTextPane textArea2;
 	static final JFileChooser grammarChooser = new JFileChooser();
 	static private File grammarFile;
 	static protected String grammarFileLines=new String();
 	static final JFileChooser sentenceChooser = new JFileChooser();
 	static private File sentenceFile;
 	static protected String sentenceFileLines=new String();
+	
+	private StringBuilder log;
 
 	/**
 	 * Launch the application.
@@ -47,7 +53,7 @@ public class Window {
 			public void run() {
 				try {
 					Window window = new Window();
-					window.frame.setVisible(true);
+					window.frmEarleyParser.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -62,14 +68,23 @@ public class Window {
 		initialize();
 	}
 
+	public void addToLog(String txt, String color) {
+		log.append("<div style=\"color:" + color + ";font-family:sans-serif;font-size:10px;\">" + txt + "</div>");
+		textArea2.setText(log.toString());
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(50, 50, 800, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		log = new StringBuilder();
+		log.append("<html>");
+		frmEarleyParser = new JFrame();
+		frmEarleyParser.setTitle("Earley Parser");
+		frmEarleyParser.setResizable(false);
+		frmEarleyParser.setBounds(50, 50, 800, 500);
+		frmEarleyParser.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmEarleyParser.getContentPane().setLayout(null);
 
 		JButton btnChooseGrammarFile = new JButton("Choose grammar file");
 		btnChooseGrammarFile.addActionListener(new ActionListener() {
@@ -84,7 +99,7 @@ public class Window {
 			}
 		});
 		btnChooseGrammarFile.setBounds(10, 11, 166, 29);
-		frame.getContentPane().add(btnChooseGrammarFile);
+		frmEarleyParser.getContentPane().add(btnChooseGrammarFile);
 
 		textArea = new JTextArea();
 		//textArea.setBounds(186, 13, 588, 181);
@@ -95,28 +110,41 @@ public class Window {
 		JScrollPane scroll = new JScrollPane ( textArea );
 		scroll.setBounds(186, 13, 588, 181);
 		scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED );
-		frame.getContentPane().add ( scroll );
+		frmEarleyParser.getContentPane().add ( scroll );
 
 		/*textArea2 = new JTextArea();
 		textArea2.setBounds(232, 205, 541, 57);
 		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
 		frame.getContentPane().add(textArea2);*/
-		
-		textArea2 = new JTextArea();
+
+		/*textArea2 = new JTextArea();
 		textArea2.setEditable(false);
 		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
+		
 
 		JScrollPane scroll2 = new JScrollPane ( textArea2 );
 		scroll2.setBounds(232, 205, 541, 57);
 		scroll2.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		frame.getContentPane().add ( scroll2 );
+		frame.getContentPane().add ( scroll2 );*/
+		
+		textArea2 = new JTextPane();
+		textArea2.setEditable(false);
+		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
+		textArea2.setContentType("text/html");
+		textArea2.setFont(new Font("Arial", Font.PLAIN, 13));
 		
 		
-		JLabel lblGrammarErrorLog = new JLabel("Grammar error log:");
+		JScrollPane scroll2 = new JScrollPane ( textArea2 );
+		scroll2.setBounds(186, 341, 588, 57);
+		scroll2.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		frmEarleyParser.getContentPane().add ( scroll2 );
+		
+
+		JLabel lblGrammarErrorLog = new JLabel("LOG");
 		lblGrammarErrorLog.setEnabled(false);
 		lblGrammarErrorLog.setForeground(Color.red);
-		lblGrammarErrorLog.setBounds(102, 205, 118, 14);
-		frame.getContentPane().add(lblGrammarErrorLog);
+		lblGrammarErrorLog.setBounds(134, 341, 42, 14);
+		frmEarleyParser.getContentPane().add(lblGrammarErrorLog);
 
 		JButton btnChooseSentencesFile = new JButton("Choose sentences file");
 		btnChooseSentencesFile.addActionListener(new ActionListener() {
@@ -130,46 +158,64 @@ public class Window {
 				}
 			}
 		});
-		btnChooseSentencesFile.setBounds(10, 283, 166, 29);
-		frame.getContentPane().add(btnChooseSentencesFile);
+		btnChooseSentencesFile.setBounds(10, 210, 166, 29);
+		frmEarleyParser.getContentPane().add(btnChooseSentencesFile);
 
-		
+
 		textArea1 = new JTextArea();
 		textArea1.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		JScrollPane scroll1 = new JScrollPane ( textArea1 );
-		scroll1.setBounds(186, 285, 588, 113);
+		scroll1.setBounds(186, 212, 588, 113);
 		scroll1.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		frame.getContentPane().add ( scroll1 );
-				
+		frmEarleyParser.getContentPane().add ( scroll1 );
+
 		JButton btnStart = new JButton("START");
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				System.out.println("- Grammar: \n"+ textArea.getText());
 				System.out.println("- Sentences: \n"+ textArea1.getText());
-				
+
 				startEarleyParser();
 			}
 		});
-		btnStart.setBounds(375, 409, 118, 42);
-		frame.getContentPane().add(btnStart);
+		btnStart.setBounds(375, 409, 107, 29);
+		frmEarleyParser.getContentPane().add(btnStart);
 	}
 
-	@SuppressWarnings("unused")
+
 	protected void startEarleyParser() {
-		
+
 
 		try {
 			Grammar grammar =new Grammar(textArea.getText().trim());
 			Lines lines = new Lines(textArea1.getText().trim(), true);
 			EarleyParser ep;
-			for(int i=0; i<lines.getLines().size(); i++) {
-				ep = new EarleyParser(lines.getLines().get(i), grammar);
+
+			ArrayList<Sentence> sentences = lines.getLines();
+			Boolean b[] = new Boolean[sentences.size()];
+
+			for(int i = 0; i < sentences.size(); i++) {
+				ep = new EarleyParser(sentences.get(i), grammar);
+				b[i] = ep.run();
 				//TODO: ARVORE
 			}
+
+			for (int i = 0; i < b.length; i++)
+				if(b[i]) {
+					addToLog("Phrase " + (i + 1) + " is valid!", "green");
+					System.out.println("Phrase " + (i + 1) + " is valid!");
+				}
+				else {
+					addToLog("Phrase " + (i + 1) + " is invalid!", "maroon");
+					System.err.println("Phrase " + (i + 1) + " is invalid!");
+				}
+
+
+
 		} catch (GrammarErrorException e) {
-			updateErrorLog(e.getMessage());
+			addToLog(e.getMessage(), "red");
 			//e.printStackTrace();
 		}
 	}
@@ -182,9 +228,6 @@ public class Window {
 		textArea1.append(sentenceFileLines+"\n");
 	}
 
-	protected void updateErrorLog(String text) {
-		textArea2.append(text + "\n");
-	}
 
 	protected void readContent(File file, int text) {
 
