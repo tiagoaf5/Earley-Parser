@@ -2,8 +2,11 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -39,7 +42,7 @@ public class Grammar {
 	public static void main(String[] args) {
 		
 		try {
-			new Grammar(args[0]);
+			new Grammar(args[0], true);
 			//new Grammar("./ficheiros_teste/ggg.txt");
 		} catch (GrammarErrorException e) {
 			System.err.println(e.getMessage());
@@ -47,14 +50,18 @@ public class Grammar {
 	}
 
 
-	public Grammar(String path) throws GrammarErrorException {
+	public Grammar(String path, boolean test) throws GrammarErrorException {
 		filePath = path;
 		readFile();
 		semanticAnalysis();
 	}
 
+	public Grammar(String text) throws GrammarErrorException {
+		readString(text);
+		semanticAnalysis();
+	}
+	
 	public Grammar() {
-
 	}
 
 	public void readFile() throws GrammarErrorException {
@@ -64,7 +71,21 @@ public class Grammar {
 		if (!f.exists())
 			throw new GrammarErrorException("File doesn't exist!");
 
-		try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+		try {
+			reader(new FileReader(f));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new GrammarErrorException("File doesn't exist!");
+		}
+	}
+	
+	public void readString(String x) throws GrammarErrorException {
+		reader(new StringReader(x));
+	}
+
+
+	private void reader(Reader in) throws GrammarErrorException {
+		try (BufferedReader br = new BufferedReader(in)) {
 			String line = br.readLine();
 
 			int cont = 0;

@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,6 +21,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import main.EarleyParser;
+import main.Grammar;
+import main.GrammarErrorException;
+import main.Lines;
+
 public class Window {
 
 	private JFrame frame;
@@ -30,10 +34,10 @@ public class Window {
 	protected JTextArea textArea2;
 	static final JFileChooser grammarChooser = new JFileChooser();
 	static private File grammarFile;
-	static protected ArrayList<String> grammarFileLines=new ArrayList<String>();
+	static protected String grammarFileLines=new String();
 	static final JFileChooser sentenceChooser = new JFileChooser();
 	static private File sentenceFile;
-	static protected ArrayList<String> sentenceFileLines=new ArrayList<String>();
+	static protected String sentenceFileLines=new String();
 
 	/**
 	 * Launch the application.
@@ -91,7 +95,7 @@ public class Window {
 		JScrollPane scroll = new JScrollPane ( textArea );
 		scroll.setBounds(186, 13, 588, 181);
 		scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED );
-		frame.add ( scroll );
+		frame.getContentPane().add ( scroll );
 
 		/*textArea2 = new JTextArea();
 		textArea2.setBounds(232, 205, 541, 57);
@@ -99,12 +103,13 @@ public class Window {
 		frame.getContentPane().add(textArea2);*/
 		
 		textArea2 = new JTextArea();
+		textArea2.setEditable(false);
 		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
 
 		JScrollPane scroll2 = new JScrollPane ( textArea2 );
 		scroll2.setBounds(232, 205, 541, 57);
 		scroll2.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		frame.add ( scroll2 );
+		frame.getContentPane().add ( scroll2 );
 		
 		
 		JLabel lblGrammarErrorLog = new JLabel("Grammar error log:");
@@ -135,7 +140,7 @@ public class Window {
 		JScrollPane scroll1 = new JScrollPane ( textArea1 );
 		scroll1.setBounds(186, 285, 588, 113);
 		scroll1.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		frame.add ( scroll1 );
+		frame.getContentPane().add ( scroll1 );
 				
 		JButton btnStart = new JButton("START");
 		btnStart.addActionListener(new ActionListener() {
@@ -143,7 +148,7 @@ public class Window {
 
 				System.out.println("- Grammar: \n"+ textArea.getText());
 				System.out.println("- Sentences: \n"+ textArea1.getText());
-
+				
 				startEarleyParser();
 			}
 		});
@@ -152,30 +157,30 @@ public class Window {
 	}
 
 	protected void startEarleyParser() {
-		/*
-		try {
+		
 
-		} catch(GrammarErrorException e) {
+		try {
+			Grammar grammar =new Grammar(textArea.getText().trim());
+			Lines lines = new Lines(textArea1.getText().trim(), true);
+			EarleyParser ep = new EarleyParser(lines.getLines().get(0), grammar);
+			//TODO: ARVORE
+		} catch (GrammarErrorException e) {
 			updateErrorLog(e.getMessage());
-		}*/
+			//e.printStackTrace();
+		}
 
 	}
 
 	protected void updateGrammarText() {
-		for(int i=0; i<grammarFileLines.size(); i++) {
-			textArea.append(grammarFileLines.get(i)+"\n");
-		}
+		textArea.append(grammarFileLines+"\n");
 	}
 
 	private void updateSentencesText() {
-		for(int i=0; i<sentenceFileLines.size(); i++) {
-			textArea1.append(sentenceFileLines.get(i)+"\n");
-		}
-
+		textArea1.append(sentenceFileLines+"\n");
 	}
 
 	protected void updateErrorLog(String text) {
-		textArea.append(text + "\n");
+		textArea2.append(text + "\n");
 	}
 
 	protected void readContent(File file, int text) {
@@ -193,9 +198,9 @@ public class Window {
 
 				String line=lineRead.trim();
 				if(text==1)
-					grammarFileLines.add(line);
+					grammarFileLines+=line+"\n";
 				else
-					sentenceFileLines.add(line);
+					sentenceFileLines+=line+"\n";
 			}
 			reader.close();
 			input.close();
@@ -207,6 +212,5 @@ public class Window {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }
