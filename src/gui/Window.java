@@ -156,19 +156,22 @@ public class Window {
 		frame.getContentPane().add(btnStart);
 	}
 
+	@SuppressWarnings("unused")
 	protected void startEarleyParser() {
 		
 
 		try {
 			Grammar grammar =new Grammar(textArea.getText().trim());
 			Lines lines = new Lines(textArea1.getText().trim(), true);
-			EarleyParser ep = new EarleyParser(lines.getLines().get(0), grammar);
-			//TODO: ARVORE
+			EarleyParser ep;
+			for(int i=0; i<lines.getLines().size(); i++) {
+				ep = new EarleyParser(lines.getLines().get(i), grammar);
+				//TODO: ARVORE
+			}
 		} catch (GrammarErrorException e) {
 			updateErrorLog(e.getMessage());
 			//e.printStackTrace();
 		}
-
 	}
 
 	protected void updateGrammarText() {
