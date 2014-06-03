@@ -1,27 +1,24 @@
 package main;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Paint;
 import java.util.ArrayList;
 
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import javax.swing.JFrame;
+
+import org.apache.commons.collections15.Transformer;
+
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.TreeLayout;
 import edu.uci.ics.jung.graph.DelegateForest;
 import edu.uci.ics.jung.graph.DirectedOrderedSparseMultigraph;
 import edu.uci.ics.jung.graph.Forest;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Paint;
-
-import javax.swing.JFrame;
-
-import org.apache.commons.collections15.Transformer;
-
-class MyTree {
+/*class MyTree {
 	EarleyParser.Node root;
 	private int edgeid;
 	//adicionar aqui objectos do grafo
@@ -32,10 +29,7 @@ class MyTree {
 		showTree(root,0, null);
 	}
 	private void showTree(EarleyParser.Node root,int level, String previous) {//modificar para em vez de imprimir adicionar ao grafo
-		/*System.out.print(level);
-		for(int i = 0; i <= level; i++)
-			System.out.print(" ");
-		System.out.println(root.text);*/
+
 		String cur = root.text;
 		while(Main.g1.containsVertex(cur)) {
 			cur = cur + " ";
@@ -50,7 +44,7 @@ class MyTree {
 		}
 	}
 }
-
+*/
 public class Main {
 	public static Graph<String, Integer> g1;
 	public static int i = 0;
@@ -76,6 +70,7 @@ public class Main {
 			}
 		} catch (Exception e) {
 			System.out.println("ERROR");
+			System.out.println(e.getMessage());
 		}
 		
 		Layout<String, String> layout = new TreeLayout((Forest) g1);

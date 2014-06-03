@@ -10,7 +10,7 @@ import main.EarleyParser.State.Mypair;
 
 public class EarleyParser {
 	
-	class Node{
+	public static class Node{
 		String text;
 		ArrayList<Node> siblings = new ArrayList<Node>();
 		

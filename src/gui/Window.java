@@ -1,8 +1,10 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -28,7 +30,19 @@ import main.EarleyParser;
 import main.Grammar;
 import main.GrammarErrorException;
 import main.Lines;
+import main.MyTree;
 import main.Sentence;
+
+import org.apache.commons.collections15.Transformer;
+
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.TreeLayout;
+import edu.uci.ics.jung.graph.DelegateForest;
+import edu.uci.ics.jung.graph.DirectedOrderedSparseMultigraph;
+import edu.uci.ics.jung.graph.Forest;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
 public class Window {
 
@@ -42,8 +56,9 @@ public class Window {
 	static final JFileChooser sentenceChooser = new JFileChooser();
 	static private File sentenceFile;
 	static protected String sentenceFileLines=new String();
-	
+
 	private StringBuilder log;
+	public static Graph<String, Integer> g1;
 
 	/**
 	 * Launch the application.
@@ -72,13 +87,17 @@ public class Window {
 		log.append("<div style=\"color:" + color + ";font-family:sans-serif;font-size:10px;\">" + txt + "</div>");
 		textArea2.setText(log.toString());
 	}
-	
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		log = new StringBuilder();
 		log.append("<html>");
+
+		grammarChooser.setCurrentDirectory(new File("."));
+		sentenceChooser.setCurrentDirectory(new File("."));
+
 		frmEarleyParser = new JFrame();
 		frmEarleyParser.setTitle("Earley Parser");
 		frmEarleyParser.setResizable(false);
@@ -112,33 +131,19 @@ public class Window {
 		scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED );
 		frmEarleyParser.getContentPane().add ( scroll );
 
-		/*textArea2 = new JTextArea();
-		textArea2.setBounds(232, 205, 541, 57);
-		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
-		frame.getContentPane().add(textArea2);*/
 
-		/*textArea2 = new JTextArea();
-		textArea2.setEditable(false);
-		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
-		
-
-		JScrollPane scroll2 = new JScrollPane ( textArea2 );
-		scroll2.setBounds(232, 205, 541, 57);
-		scroll2.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		frame.getContentPane().add ( scroll2 );*/
-		
 		textArea2 = new JTextPane();
 		textArea2.setEditable(false);
 		textArea2.setBorder(BorderFactory.createLineBorder(Color.gray));
 		textArea2.setContentType("text/html");
 		textArea2.setFont(new Font("Arial", Font.PLAIN, 13));
-		
-		
+
+
 		JScrollPane scroll2 = new JScrollPane ( textArea2 );
 		scroll2.setBounds(186, 341, 588, 57);
 		scroll2.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		frmEarleyParser.getContentPane().add ( scroll2 );
-		
+
 
 		JLabel lblGrammarErrorLog = new JLabel("LOG");
 		lblGrammarErrorLog.setEnabled(false);
@@ -189,7 +194,7 @@ public class Window {
 
 
 		try {
-			Grammar grammar =new Grammar(textArea.getText().trim());
+			Grammar grammar =new Grammar(textArea.getText().trim(), true);
 			Lines lines = new Lines(textArea1.getText().trim(), true);
 			EarleyParser ep;
 
@@ -199,7 +204,44 @@ public class Window {
 			for(int i = 0; i < sentences.size(); i++) {
 				ep = new EarleyParser(sentences.get(i), grammar);
 				b[i] = ep.run();
-				//TODO: ARVORE
+				if (b[i]) {
+					g1 = new DelegateForest<String, Integer>(new DirectedOrderedSparseMultigraph<String, Integer>());
+					ArrayList<MyTree> trees = new ArrayList<MyTree>();
+
+					for(EarleyParser.Node node : ep.getTrees())	{
+						trees.add(new MyTree(node));
+					};
+
+					for(MyTree tree : trees) {
+						tree.show();
+					}
+
+
+					Layout<String, String> layout = new TreeLayout<String, String>((Forest) g1);
+					//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
+					// The BasicVisualizationServer<V,E> is parameterized by the vertex and edge types
+
+					Transformer<String, Paint> vertexPaint = new Transformer<String, Paint>() {
+						public Paint transform(String s) {
+							if(s.startsWith("\""))
+								return Color.CYAN;
+							else
+								return Color.BLUE;
+						}
+					};
+
+					BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
+					vv.setGraphLayout(layout);
+					vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
+					vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+					vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
+
+					JFrame frame = new JFrame("Tree Visualization  -  Sentence " + (i+1));
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.getContentPane().add(vv); 
+					frame.pack();
+					frame.setVisible(true);  
+				}
 			}
 
 			for (int i = 0; i < b.length; i++)

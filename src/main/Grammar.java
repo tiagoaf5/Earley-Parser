@@ -50,13 +50,13 @@ public class Grammar {
 	}
 
 
-	public Grammar(String path, boolean test) throws GrammarErrorException {
+	public Grammar(String path) throws GrammarErrorException {
 		filePath = path;
 		readFile();
 		semanticAnalysis();
 	}
 
-	public Grammar(String text) throws GrammarErrorException {
+	public Grammar(String text, boolean test) throws GrammarErrorException {
 		readString(text);
 		semanticAnalysis();
 	}
