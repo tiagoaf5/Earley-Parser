@@ -215,7 +215,7 @@ public class Window {
 
 
 		} catch (GrammarErrorException e) {
-			addToLog(e.getMessage(), "red");
+			addToLog("<b>"+ e.getMessage() + "</b>", "red");
 			//e.printStackTrace();
 		}
 	}
