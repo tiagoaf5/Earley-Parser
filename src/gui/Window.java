@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -184,6 +185,25 @@ public class Window {
 		});
 		btnStart.setBounds(375, 409, 107, 29);
 		frmEarleyParser.getContentPane().add(btnStart);
+		
+		JButton btnSaveGrammar = new JButton("Save grammar");
+		btnSaveGrammar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			
+			}
+		});
+		btnSaveGrammar.setBounds(39, 51, 137, 23);
+		frmEarleyParser.getContentPane().add(btnSaveGrammar);
+
+		JButton btnSaveSentences = new JButton("Save sentences");
+		btnSaveSentences.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			
+			}
+		});
+		btnSaveSentences.setBounds(39, 250, 137, 23);
+		frmEarleyParser.getContentPane().add(btnSaveSentences);
 	}
 
 
