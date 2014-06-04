@@ -335,11 +335,19 @@ public class Window {
 	}
 
 	protected void updateGrammarText() {
-		textArea.setText(grammarFileLines+"\n"); //Mudei pq me estava a chatear ter de limpar para testar outra coisa qualquer
+		if(textArea.getText().equals("")) {
+			textArea.setText(null);
+			textArea.setText(grammarFileLines);
+		} else
+			textArea.append(grammarFileLines);
 	}
 
 	private void updateSentencesText() {
-		textArea1.setText(sentenceFileLines+"\n");//Mudei pq me estava a chatear ter de limpar para testar outra coisa qualquer
+		if(textArea1.getText().equals("")) {
+			textArea1.setText(null);
+			textArea1.setText(sentenceFileLines);
+		} else
+			textArea1.append(sentenceFileLines);
 	}
 
 
