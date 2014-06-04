@@ -3,8 +3,6 @@ package main;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import main.EarleyParser.State.Mypair;
-
 public class EarleyParser {
 	
 	public static class Node{
@@ -13,7 +11,7 @@ public class EarleyParser {
 		
 		Node(String s)
 		{
-			text =s;
+			text=s;
 		}
 	}
 
@@ -28,11 +26,11 @@ public class EarleyParser {
 			}
 		}
 		
-		int i; // pos na frase
+		int i; // position in the sentence
 		String left;
-		int current; // pos na regra da gramatica
+		int current; // position in the grammar rule
 		ArrayList<String> right;
-		ArrayList<Mypair> parents; // para cada right, tem varios estados pais 
+		ArrayList<Mypair> parents; // each right has parents 
 
 		State(String left, int current, ArrayList<String> right, int i)
 		{
@@ -210,18 +208,7 @@ public class EarleyParser {
 			State snew = new State(s.left,s.current+1,s.right,s.i);
 			State newAdded = addIfNotContains(j,snew); //adds to current chart
 			
-			for(Mypair right : s.parents){//copy parents from duplicated state
-					for(State parent : right.values)
-					{
-						for(Mypair newAddedRight : newAdded.parents)
-						{
-							if(!newAddedRight.values.contains(parent))
-							{
-								newAddedRight.values.add(parent);
-							}
-						}
-					}
-			}
+			copyParents(s, newAdded);
 		} else if(B.equals(words.getSentence().get(j))) 
 		{
 			System.out.print("Scanner Action");
@@ -229,21 +216,7 @@ public class EarleyParser {
 			State newAdded = addIfNotContains(j+1,snew); //adds to next charts
 			
 			//copy parents from duplicated state
-			for(Mypair pair : s.parents)
-			{
-				for(Mypair newAddedpair : newAdded.parents)
-				{
-					if(pair.key.equals(newAddedpair.key))
-					{
-						for(State value : pair.values)
-						{
-							if(!newAddedpair.values.contains(value))
-								newAddedpair.values.add(value);
-						}
-					}
-					break;
-				}
-			}
+			copyParents(s, newAdded);
 			
 		}
 	}
@@ -260,28 +233,9 @@ public class EarleyParser {
 				State newState = new State(currentState.left,currentState.current+1,currentState.right,currentState.i);
 				State newAdded = addIfNotContains(k,newState);
 				//newAdded.parents.add(s);
-				for(Mypair pair : newAdded.parents)
-					if(pair.key.equals(s.left))
-					{
-						pair.values.add(s);
-						break;
-					}
-				
-				for(Mypair pair : currentState.parents)
-				{
-					for(Mypair newAddedpair : newAdded.parents)
-					{
-						if(pair.key.equals(newAddedpair.key))
-						{
-							for(State value : pair.values)
-							{
-								if(!newAddedpair.values.contains(value))
-									newAddedpair.values.add(value);
-							}
-						}
-						break;
-					}
-				}
+				if(newState==newAdded) //only if it's not a new state, it has parents
+					newAdded.parents.get(currentState.current).values.add(s);
+				copyParents(currentState, newAdded);
 			}
 		}
 	}
@@ -301,6 +255,18 @@ public class EarleyParser {
 		System.out.println("  Added " + s + " to chart " + num);
 		list.add(s);
 		return s;
+	}
+	
+	private void copyParents(State s, State newAdded) {
+		
+		for(int i = 0; i < s.parents.size(); i++) //both states have the same number of right
+		{
+			for(State value : s.parents.get(i).values)
+			{
+				if(!newAdded.parents.get(i).values.contains(value))
+					newAdded.parents.get(i).values.add(value);
+			}
+		}
 	}
 
 }

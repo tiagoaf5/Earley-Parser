@@ -81,7 +81,6 @@ public class Window {
 	 * Create the application.
 	 */
 	public Window() {
-		g = new DelegateForest<String, Integer>(new DirectedOrderedSparseMultigraph<String, Integer>());
 		initialize();
 	}
 
@@ -258,8 +257,7 @@ public class Window {
 
 
 	protected void startEarleyParser() {
-
-
+		g = new DelegateForest<String, Integer>(new DirectedOrderedSparseMultigraph<String, Integer>());
 		try {
 			Grammar grammar =new Grammar(textArea.getText().trim(), true);
 			Lines lines = new Lines(textArea1.getText().trim(), true);
@@ -283,9 +281,19 @@ public class Window {
 					}  
 				}
 			}
+
+			boolean atleastone = false;
+			for (int i = 0; i < b.length; i++)
+				if(b[i]) {
+					addToLog("Sentence " + (i + 1) + " is valid!", "green");
+					System.out.println("Sentence " + (i + 1) + " is valid!");
+					atleastone = true;
+				}
+				else {
+					addToLog("Sentence " + (i + 1) + " is invalid!", "maroon");
+					System.err.println("Sentence " + (i + 1) + " is invalid!");
+				}
 			
-
-
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			Layout<String, String> layout = new TreeLayout<String, String>((Forest) g);
 			//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
@@ -294,35 +302,31 @@ public class Window {
 			Transformer<String, Paint> vertexPaint = new Transformer<String, Paint>() {
 				public Paint transform(String s) {
 					if(s.startsWith("\""))
-						return Color.CYAN;
+					{
+						if(s.startsWith("\"\""))
+						{
+							return Color.LIGHT_GRAY;
+						} else
+							return Color.CYAN;
+					}
 					else
 						return Color.BLUE;
 				}
 			};
+			if(atleastone)
+			{
+				BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
+				vv.setGraphLayout(layout);
+				vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
+				vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
+				vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 
-			BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
-			vv.setGraphLayout(layout);
-			vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
-			vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
-			vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-
-			JFrame frame = new JFrame("Tree Visualization");
-			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			frame.getContentPane().add(vv); 
-			frame.pack();
-			frame.setVisible(true);
-
-			for (int i = 0; i < b.length; i++)
-				if(b[i]) {
-					addToLog("Sentence " + (i + 1) + " is valid!", "green");
-					System.out.println("Sentence " + (i + 1) + " is valid!");
-				}
-				else {
-					addToLog("Sentence " + (i + 1) + " is invalid!", "maroon");
-					System.err.println("Sentence " + (i + 1) + " is invalid!");
-				}
-
-
+				JFrame frame = new JFrame("Tree Visualization");
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.getContentPane().add(vv); 
+				frame.pack();
+				frame.setVisible(true);
+			}
 
 		} catch (GrammarErrorException e) {
 			addToLog("<b>"+ e.getMessage() + "</b>", "red");
@@ -331,11 +335,11 @@ public class Window {
 	}
 
 	protected void updateGrammarText() {
-		textArea.append(grammarFileLines+"\n");
+		textArea.setText(grammarFileLines+"\n"); //Mudei pq me estava a chatear ter de limpar para testar outra coisa qualquer
 	}
 
 	private void updateSentencesText() {
-		textArea1.append(sentenceFileLines+"\n");
+		textArea1.setText(sentenceFileLines+"\n");//Mudei pq me estava a chatear ter de limpar para testar outra coisa qualquer
 	}
 
 
