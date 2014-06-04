@@ -166,7 +166,7 @@ public class Grammar {
 
 				if(matched.charAt(matched.length() - 1) == '*') {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
-							+ " | " +  matched.substring(1, matched.length() - 2) + " | \"\"";
+							+/* " | " +  matched.substring(1, matched.length() - 2) + */" | \"\"";
 				}
 				else if(matched.charAt(matched.length() - 1) == '+') {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
