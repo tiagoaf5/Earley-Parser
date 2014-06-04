@@ -9,8 +9,8 @@ public class EarleyTest {
 
 	@Test
 	public void test1() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar1.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences1.txt");
+		Grammar g = new Grammar("./testsuite/grammar1.txt");
+		Lines lines=new Lines("./testsuite/sentences1.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -19,8 +19,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test2() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar1.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences4.txt");
+		Grammar g = new Grammar("./testsuite/grammar1.txt");
+		Lines lines=new Lines("./testsuite/sentences4.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -29,8 +29,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test3() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar5.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences5.txt");
+		Grammar g = new Grammar("./testsuite/grammar5.txt");
+		Lines lines=new Lines("./testsuite/sentences5.txt");
 		for(Sentence sentence : lines.getLines())
 		{
 			EarleyParser ep = new EarleyParser(sentence, g);
@@ -42,8 +42,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test4() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar5.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences5-fail.txt");
+		Grammar g = new Grammar("./testsuite/grammar5.txt");
+		Lines lines=new Lines("./testsuite/sentences5-fail.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -52,8 +52,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test_epsa() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar_epsa.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences_epsa.txt");
+		Grammar g = new Grammar("./testsuite/grammar_epsa.txt");
+		Lines lines=new Lines("./testsuite/sentences_epsa.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -66,8 +66,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test5() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar6.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences6.txt");
+		Grammar g = new Grammar("./testsuite/grammar6.txt");
+		Lines lines=new Lines("./testsuite/sentences6.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -76,8 +76,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test5_1() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar6-1.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences6.txt");
+		Grammar g = new Grammar("./testsuite/grammar6-1.txt");
+		Lines lines=new Lines("./testsuite/sentences6.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -90,8 +90,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test_star() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar_star.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences_star.txt");
+		Grammar g = new Grammar("./testsuite/grammar_star.txt");
+		Lines lines=new Lines("./testsuite/sentences_star.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -100,8 +100,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test_star2() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar_star2.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences_star2.txt");
+		Grammar g = new Grammar("./testsuite/grammar_star2.txt");
+		Lines lines=new Lines("./testsuite/sentences_star2.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -110,8 +110,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test_plus() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar_plus.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences_plus.txt");
+		Grammar g = new Grammar("./testsuite/grammar_plus.txt");
+		Lines lines=new Lines("./testsuite/sentences_plus.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);
@@ -125,8 +125,8 @@ public class EarleyTest {
 	
 	@Test
 	public void test_question() throws GrammarErrorException {
-		Grammar g = new Grammar("./ficheiros_teste/grammar_question.txt");
-		Lines lines=new Lines("./ficheiros_teste/sentences_question.txt");
+		Grammar g = new Grammar("./testsuite/grammar_question.txt");
+		Lines lines=new Lines("./testsuite/sentences_question.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
 		boolean result = ep.run();
 		System.out.println(result);

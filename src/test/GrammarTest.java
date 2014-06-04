@@ -23,7 +23,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammar1() throws GrammarErrorException {
 
-		Grammar a = new Grammar("./ficheiros_teste/grammar1.txt");
+		Grammar a = new Grammar("./testsuite/grammar1.txt");
 		LinkedHashSet<String> productions = a.getProductions();
 		HashMap<String, ArrayList<ArrayList<String>>> grammar = a.getGrammar();
 
@@ -95,7 +95,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammar2() throws GrammarErrorException {
 
-		Grammar a = new Grammar("./ficheiros_teste/grammar2.txt");
+		Grammar a = new Grammar("./testsuite/grammar2.txt");
 		LinkedHashSet<String> productions = a.getProductions();
 		HashMap<String, ArrayList<ArrayList<String>>> grammar = a.getGrammar();
 
@@ -170,7 +170,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammar3() throws GrammarErrorException {
 		Grammar a = new Grammar();
-		a.setFilePath("./ficheiros_teste/grammar3.txt");
+		a.setFilePath("./testsuite/grammar3.txt");
 
 		a.readFile();
 		LinkedHashSet<String> productions = a.getProductions();
@@ -226,7 +226,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammar4() throws GrammarErrorException {
 		Grammar a = new Grammar();
-		a.setFilePath("./ficheiros_teste/grammar4.txt");
+		a.setFilePath("./testsuite/grammar4.txt");
 
 		a.readFile();
 		LinkedHashSet<String> productions = a.getProductions();
@@ -283,7 +283,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammarStar() throws GrammarErrorException {
 		Grammar a = new Grammar();
-		a.setFilePath("./ficheiros_teste/grammar_star.txt");
+		a.setFilePath("./testsuite/grammar_star.txt");
 
 		a.readFile();
 		
@@ -342,7 +342,7 @@ public class GrammarTest {
 	@Test
 	public void testGrammarPlus() throws GrammarErrorException {
 		Grammar a = new Grammar();
-		a.setFilePath("./ficheiros_teste/grammar_plus.txt");
+		a.setFilePath("./testsuite/grammar_plus.txt");
 
 		a.readFile();
 

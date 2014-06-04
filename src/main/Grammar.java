@@ -39,17 +39,6 @@ public class Grammar {
 
 	private int production_index = 1;
 
-	public static void main(String[] args) {
-		
-		try {
-			new Grammar(args[0], true);
-			//new Grammar("./ficheiros_teste/ggg.txt");
-		} catch (GrammarErrorException e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
-
 	public Grammar(String path) throws GrammarErrorException {
 		filePath = path;
 		readFile();

@@ -317,14 +317,14 @@ public class Window {
 			{
 				BasicVisualizationServer<String,String> vv = new BasicVisualizationServer<String,String>(layout);
 				vv.setGraphLayout(layout);
-				vv.setPreferredSize(new Dimension(800,600)); //Sets the viewing area size
 				vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<String>());
 				vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-
+				vv.setPreferredSize(layout.getSize());
 				JFrame frame = new JFrame("Tree Visualization");
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				frame.getContentPane().add(vv); 
-				frame.pack();
+				JScrollPane panel = new JScrollPane(vv);
+				frame.setContentPane(panel);
+				frame.setSize(new Dimension(800, (int) layout.getSize().getHeight() + 100));
 				frame.setVisible(true);
 			}
 

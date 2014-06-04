@@ -1,0 +1,1 @@
+Utilizacao de ou “|”, longos inputs, recursividade

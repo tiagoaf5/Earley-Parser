@@ -10,7 +10,7 @@ public class SentencesTest {
 	@SuppressWarnings("serial")
 	@Test
 	public void testSentences1() {
-		Lines lines=new Lines("ficheiros_teste/sentences1.txt");
+		Lines lines=new Lines("testsuite/sentences1.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
 			add("\"2\"");
 			add("\"+\"");
@@ -27,7 +27,7 @@ public class SentencesTest {
 	@SuppressWarnings("serial")
 	@Test
 	public void testSentences2() {
-		Lines lines=new Lines("ficheiros_teste/sentences2.txt");
+		Lines lines=new Lines("testsuite/sentences2.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
 			add("\"id\"");
 			add("\"+\"");
@@ -48,7 +48,7 @@ public class SentencesTest {
 	@SuppressWarnings("serial")
 	@Test
 	public void testSentences3() {
-		Lines lines=new Lines("ficheiros_teste/sentences3.txt");
+		Lines lines=new Lines("testsuite/sentences3.txt");
 		ArrayList<String> expected = new ArrayList<String> () {{
 			add("\"bc\"");
 		}};
