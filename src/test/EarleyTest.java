@@ -12,7 +12,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar1.txt");
 		Lines lines=new Lines("./testsuite/sentences1.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 	}
@@ -22,7 +22,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar1.txt");
 		Lines lines=new Lines("./testsuite/sentences4.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertFalse(result);
 	}
@@ -34,7 +34,7 @@ public class EarleyTest {
 		for(Sentence sentence : lines.getLines())
 		{
 			EarleyParser ep = new EarleyParser(sentence, g);
-			boolean result = ep.run();
+			boolean result = (ep.run()==0);
 			System.out.println(result);
 			assertTrue(result);
 		}
@@ -45,7 +45,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar5.txt");
 		Lines lines=new Lines("./testsuite/sentences5-fail.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertFalse(result);
 	}
@@ -55,11 +55,11 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar_epsa.txt");
 		Lines lines=new Lines("./testsuite/sentences_epsa.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		EarleyParser ep2 = new EarleyParser(lines.getLines().get(1), g);
-		result = ep2.run();
+		result = (ep2.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 	}
@@ -69,7 +69,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar6.txt");
 		Lines lines=new Lines("./testsuite/sentences6.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 	}
@@ -79,11 +79,11 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar6-1.txt");
 		Lines lines=new Lines("./testsuite/sentences6.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		EarleyParser ep2 = new EarleyParser(lines.getLines().get(1), g);
-		boolean result2 = ep2.run();
+		boolean result2 = (ep2.run()==0);
 		System.out.println(result2);
 		assertTrue(result2);
 	}
@@ -93,7 +93,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar_star.txt");
 		Lines lines=new Lines("./testsuite/sentences_star.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 	}
@@ -103,7 +103,7 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar_star2.txt");
 		Lines lines=new Lines("./testsuite/sentences_star2.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 	}
@@ -113,12 +113,12 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar_plus.txt");
 		Lines lines=new Lines("./testsuite/sentences_plus.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		
 		ep = new EarleyParser(lines.getLines().get(1), g);
-		result = ep.run();
+		result = (ep.run()==0);
 		System.out.println(result);
 		assertFalse(result);
 	}
@@ -128,22 +128,22 @@ public class EarleyTest {
 		Grammar g = new Grammar("./testsuite/grammar_question.txt");
 		Lines lines=new Lines("./testsuite/sentences_question.txt");
 		EarleyParser ep = new EarleyParser(lines.getLines().get(0), g);
-		boolean result = ep.run();
+		boolean result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		
 		ep = new EarleyParser(lines.getLines().get(1), g);
-		result = ep.run();
+		result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		
 		ep = new EarleyParser(lines.getLines().get(2), g);
-		result = ep.run();
+		result = (ep.run()==0);
 		System.out.println(result);
 		assertTrue(result);
 		
 		ep = new EarleyParser(lines.getLines().get(3), g);
-		result = ep.run();
+		result = (ep.run()==0);
 		System.out.println(result);
 		assertFalse(result);
 		

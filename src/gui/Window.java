@@ -263,12 +263,31 @@ public class Window {
 			EarleyParser ep;
 
 			ArrayList<Sentence> sentences = lines.getLines();
-			Boolean b[] = new Boolean[sentences.size()];
 
+			boolean atleastone = false;
+			
 			for(int i = 0; i < sentences.size(); i++) {
 				ep = new EarleyParser(sentences.get(i), grammar);
-				b[i] = ep.run();
-				if (b[i]) {
+				int result = ep.run();
+				if(result > 0)
+				{
+					String error = "Error near Token " + (result-1) + " of Sentence " + (i + 1) + "!";
+					addToLog(error, "maroon");
+					System.err.println(error);	
+				} else if(result == -1)
+				{
+					String error = "Sentence " + (i + 1) + " is invalid!";
+					addToLog(error, "maroon");
+					System.err.println(error);	
+				} else if(result == 0)
+				{
+						String res = "Sentence " + (i + 1) + " is valid!";
+						addToLog(res, "green");
+						System.out.println(res);
+						atleastone = true;
+				}
+
+				if (result==0) {
 					ArrayList<MyTree> trees = new ArrayList<MyTree>();
 
 					for(int k = 0; k < ep.getTrees().size(); k++)	{
@@ -280,18 +299,6 @@ public class Window {
 					}  
 				}
 			}
-
-			boolean atleastone = false;
-			for (int i = 0; i < b.length; i++)
-				if(b[i]) {
-					addToLog("Sentence " + (i + 1) + " is valid!", "green");
-					System.out.println("Sentence " + (i + 1) + " is valid!");
-					atleastone = true;
-				}
-				else {
-					addToLog("Sentence " + (i + 1) + " is invalid!", "maroon");
-					System.err.println("Sentence " + (i + 1) + " is invalid!");
-				}
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			Layout<String, String> layout = new TreeLayout<String, String>((Forest) g);

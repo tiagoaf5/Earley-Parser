@@ -118,7 +118,7 @@ public class EarleyParser {
 		return trees;
 	}
 
-	public boolean run()
+	public int run()
 	{
 
 		//INICIALIZACAO
@@ -136,7 +136,7 @@ public class EarleyParser {
 			if(charts.get(i).isEmpty())
 			{
 				System.out.println("Nothing to do for this word");
-				return false;
+				return i+1;
 			}
 
 			for(int snum = 0; snum < charts.get(i).size();snum++)
@@ -178,7 +178,9 @@ public class EarleyParser {
 		}
 
 		boolean r = charts.get(charts.size()-1).contains(last_state);
-		return r;
+		if(r)
+			return 0;
+		else return -1;
 	}
 	
 	private void predictor(State s, int j) {
