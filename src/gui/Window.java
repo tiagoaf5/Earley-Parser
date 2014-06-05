@@ -53,11 +53,9 @@ public class Window {
 	protected JTextPane textArea2;
 	static final JFileChooser grammarChooser = new JFileChooser(".");
 	static private File grammarFile;
-	static protected String grammarFileLines=new String();
 	static final JFileChooser sentenceChooser = new JFileChooser(".");
 	static private File sentenceFile;
-	static protected String sentenceFileLines=new String();
-
+	
 	private StringBuilder log;
 	public Graph<String, Integer> g;
 
@@ -111,7 +109,6 @@ public class Window {
 					grammarFile = grammarChooser.getSelectedFile();
 					System.out.println("Opening grammar file: " + grammarFile.getName() + ".\n");
 					readContent(grammarFile, 1);
-					updateGrammarText();
 				}
 			}
 		});
@@ -120,7 +117,6 @@ public class Window {
 
 		textArea = new JTextArea();
 		//textArea.setBounds(186, 13, 588, 181);
-		//textArea.insert("olaaa", 0);
 		textArea.setBorder(BorderFactory.createLineBorder(Color.black));
 		//frame.getContentPane().add(textArea);
 
@@ -157,7 +153,7 @@ public class Window {
 					sentenceFile = sentenceChooser.getSelectedFile();
 					System.out.println("Opening sentences file: " + sentenceFile.getName() + ".\n");
 					readContent(sentenceFile, 2);
-					updateSentencesText();
+					//updateSentencesText();
 				}
 			}
 		});
@@ -336,23 +332,6 @@ public class Window {
 		}
 	}
 
-	protected void updateGrammarText() {
-		if(textArea.getText().equals("")) {
-			textArea.setText(null);
-			textArea.setText(grammarFileLines);
-		} else
-			textArea.append(grammarFileLines);
-	}
-
-	private void updateSentencesText() {
-		if(textArea1.getText().equals("")) {
-			textArea1.setText(null);
-			textArea1.setText(sentenceFileLines);
-		} else
-			textArea1.append(sentenceFileLines);
-	}
-
-
 	protected void readContent(File file, int text) {
 
 		FileInputStream fileStream;
@@ -367,10 +346,14 @@ public class Window {
 			while ((lineRead = reader.readLine()) != null)   {
 
 				String line=lineRead.trim();
-				if(text==1)
-					grammarFileLines+=line+"\n";
-				else
-					sentenceFileLines+=line+"\n";
+				if(text==1) {
+					textArea.append(line+"\n");
+					//grammarFileLines+=line+"\n";
+				}
+				else {
+					textArea1.append(line+"\n");
+					//sentenceFileLines+=line+"\n";
+				}
 			}
 			reader.close();
 			input.close();
