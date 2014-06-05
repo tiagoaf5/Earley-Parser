@@ -185,11 +185,11 @@ public class Window {
 		});
 		btnStart.setBounds(375, 409, 107, 29);
 		frmEarleyParser.getContentPane().add(btnStart);
-		
+
 		JButton btnSaveGrammar = new JButton("Save grammar");
 		btnSaveGrammar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				JFileChooser chooser = new JFileChooser();
 				if (chooser.showSaveDialog(chooser) != JFileChooser.APPROVE_OPTION)
 					return;
@@ -199,12 +199,12 @@ public class Window {
 
 				FileWriter writer = null;
 				try {
-					
+
 					if(file.getName().endsWith(".txt"))
 						writer = new FileWriter(file);
 					else
 						writer = new FileWriter(file+".txt");
-					
+
 					textArea.write(writer);
 				} catch (IOException ex) {
 					addToLog("Grammar file not saved. Try again", "grey");
@@ -293,7 +293,7 @@ public class Window {
 					addToLog("Sentence " + (i + 1) + " is invalid!", "maroon");
 					System.err.println("Sentence " + (i + 1) + " is invalid!");
 				}
-			
+
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			Layout<String, String> layout = new TreeLayout<String, String>((Forest) g);
 			//layout.setSize(new Dimension(300,300)); // sets the initial size of the layout space
@@ -325,6 +325,8 @@ public class Window {
 				JScrollPane panel = new JScrollPane(vv);
 				frame.setContentPane(panel);
 				frame.setSize(new Dimension(800, (int) layout.getSize().getHeight() + 100));
+				frame.revalidate();
+				frame.repaint();
 				frame.setVisible(true);
 			}
 
