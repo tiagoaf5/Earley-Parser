@@ -1,2 +1,2 @@
-A ::= (B)? "Ana" "tudo" ("bem")? "?"
-B ::= "ol√°" | "oix"
+A ::= (B)? "Ana tudo" ("bem")? "?"
+B ::= "ol·" | "oix"

@@ -38,6 +38,14 @@ public class Grammar {
 	String startProduction;
 
 	private int production_index = 1;
+	
+	public static void main(String[] args) {
+		try {
+			new Grammar("./testsuite/nao.txt");
+		} catch (GrammarErrorException e) {
+			System.err.println(e.getMessage());
+		}
+	}
 
 	public Grammar(String path) throws GrammarErrorException {
 		filePath = path;
@@ -139,7 +147,6 @@ public class Grammar {
 
 			/*   ----------------------------------------------------     */
 
-			ArrayList<String> parentheses = new ArrayList<String>(); //TODO: delete this
 
 			Pattern regex = Pattern.compile(RE_SPLIT_PARENTHESES);
 			Matcher regexMatcher = regex.matcher(i);
@@ -155,7 +162,7 @@ public class Grammar {
 
 				if(matched.charAt(matched.length() - 1) == '*') {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
-							+/* " | " +  matched.substring(1, matched.length() - 2) + */" | \"\"";
+							+ " | \"\"";
 				}
 				else if(matched.charAt(matched.length() - 1) == '+') {
 					rule_body = matched.substring(1, matched.length() - 2) + " " + production 
@@ -170,7 +177,6 @@ public class Grammar {
 				grammar.put(production, b);
 				parseBody(rule_body, b);
 
-				parentheses.add(matched); 
 				String replacement = production;
 				regexMatcher.appendReplacement(sb, replacement);
 				production_index++;
@@ -186,37 +192,34 @@ public class Grammar {
 			System.out.println(tmp);
 
 			//add non-terminals to productions list
-			for(String j: tmp) {
+			/*for(String j: tmp) {
 				if(j.charAt(0) != '\"') {
 
 					if(!j.matches("[A-Za-z][A-Za-z0-9]*|#[0-9]*"))
 						throw new GrammarErrorException("Invalid production name: \'" + j + "\' in body: \'" + body + "\'");
 					productions.add(j);
-				} /*else if (j.charAt(0) == '(' && j.charAt(j.length()-1) == '*') {
-					//Caso de ser ("ab" C)* 
+				} 
+			}*/
+			
+			for(int cont = 0; cont < tmp.size(); cont++) {
+				if(tmp.get(cont).charAt(0) != '\"') {
 
-					//New production body
-					String inside = j.substring(1, j.length() - 3) + " " + "#" + production_index;
-
-
-
-					//create entry on grammar
-					grammar.put("#" + production_index, new ArrayList<ArrayList<String>>());
-					grammar.get("#" + production_index).add(new ArrayList<String>() {{add("");}});
-
-					//add to the productions list (avoid semantic errors)
-					productions.add("#" + production_index);
-
-					j = "#" + production_index;
-
-					production_index++;
-
-
-
-					//TODO: keep going you're doing Ok
-				}*/
+					if(!tmp.get(cont).matches("[A-Za-z][A-Za-z0-9]*|#[0-9]*"))
+						throw new GrammarErrorException("Invalid production name: \'" + tmp.get(cont) + "\' in body: \'" + body + "\'");
+					productions.add(tmp.get(cont));
+				} 
+				else if(tmp.get(cont).charAt(0) == '\"') {
+					String temp = tmp.get(cont).replace("\"", "");
+					String[] x = (temp.trim()).split(" ");
+					
+					if(x.length > 1) {
+						tmp.set(cont, "\"" + x[0] + "\"");
+						for(int k = 1; k < x.length; k++)
+							tmp.add(cont + k, "\"" + x[k] + "\"");
+					}
+				}
 			}
-
+			
 			bodies.add(tmp);	
 		}
 	}
