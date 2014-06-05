@@ -104,16 +104,16 @@ public class Grammar {
 
 					if (grammar.containsKey(head)) {
 						ArrayList<ArrayList<String>> bodies = grammar.get(head);
-						parseBody(body, bodies);
+						parseBody(body, bodies, cont+1);
 
 					} else {
 						ArrayList<ArrayList<String>> bodies = new ArrayList<ArrayList<String>>();
 						grammar.put(head, bodies);
-						parseBody(body, bodies);
+						parseBody(body, bodies,cont+1);
 					}
 				} 
 				else {
-					String abc ="Invalid grammar! Line: \""+ line + "\" doesn't follow:\n Non-Terminal ::= body";
+					String abc = "Line " + (cont + 1) + ": \'"+ line + "\' doesn't follow:\n Non-Terminal ::= body";
 					throw new GrammarErrorException(abc);
 				}
 
@@ -133,7 +133,7 @@ public class Grammar {
 	}
 
 
-	private void parseBody(String body, ArrayList<ArrayList<String>> bodies) throws GrammarErrorException {
+	private void parseBody(String body, ArrayList<ArrayList<String>> bodies, int lineNum) throws GrammarErrorException {
 		String[] tmp2 = body.split(RE_SPLIT_PIPES);
 
 
@@ -175,7 +175,7 @@ public class Grammar {
 				//parse this new rule
 				ArrayList<ArrayList<String>> b = new ArrayList<ArrayList<String>>();
 				grammar.put(production, b);
-				parseBody(rule_body, b);
+				parseBody(rule_body, b, lineNum);
 
 				String replacement = production;
 				regexMatcher.appendReplacement(sb, replacement);
@@ -205,7 +205,7 @@ public class Grammar {
 				if(tmp.get(cont).charAt(0) != '\"') {
 
 					if(!tmp.get(cont).matches("[A-Za-z][A-Za-z0-9]*|#[0-9]*"))
-						throw new GrammarErrorException("Invalid production name: \'" + tmp.get(cont) + "\' in body: \'" + body + "\'");
+						throw new GrammarErrorException("Line " + lineNum + ": Invalid production name: \'" + tmp.get(cont) + "\' in: \'" + body + "\'");
 					productions.add(tmp.get(cont));
 				} 
 				else if(tmp.get(cont).charAt(0) == '\"') {

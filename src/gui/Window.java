@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -173,6 +174,8 @@ public class Window {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				if(textArea.getText().trim().equals("") || textArea1.getText().trim().equals(""))
+					JOptionPane.showMessageDialog(null,"You must select a grammar and at least a sentence!", "Warning",JOptionPane.WARNING_MESSAGE);
 				System.out.println("- Grammar: \n"+ textArea.getText());
 				System.out.println("- Sentences: \n"+ textArea1.getText());
 
