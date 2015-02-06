@@ -1,6 +1,9 @@
 Earley Parser
 =============
 
+Contexto
+-------
+Trabalho elaborado para a cadeira Compiladores do MIEIC.
 
 Members
 -------
