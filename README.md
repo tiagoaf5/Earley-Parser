@@ -6,10 +6,10 @@ Members
 -------
 **GROUP:** Turma 1 Grupo 4
 
-**NAME1:** Ana Sousa, NR1: 201108026, GRADE1: 20, CONTRIBUTION: 25%
-**NAME2:** Augusto Silva, NR2: 201104201, GRADE2: 20, CONTRIBUTION: 25%
-**NAME3:** Diogo Nunes, NR3: 201108019, GRADE3: 20, CONTRIBUTION: 25%
-**NAME4:** Tiago Fernandes, NR4: 201106911, GRADE4: 20, CONTRIBUTION: 25%
+**NAME1:** Ana Sousa, NR1: 201108026, GRADE1: 20, CONTRIBUTION: 25%  
+**NAME2:** Augusto Silva, NR2: 201104201, GRADE2: 20, CONTRIBUTION: 25%  
+**NAME3:** Diogo Nunes, NR3: 201108019, GRADE3: 20, CONTRIBUTION: 25%  
+**NAME4:** Tiago Fernandes, NR4: 201106911, GRADE4: 20, CONTRIBUTION: 25%  
 
 SUMMARY
 -------
@@ -96,10 +96,10 @@ O conjunto de testes implementados em JUNIT permite verificar o parse correcto p
 TASK DISTRIBUTION
 -----------------
 
-**Ana Sousa:** input  e representação intermédia da sequência de tokens; interface gráfica; testes unitários
-**Augusto Silva:** implementação do algoritmo de earley; criação e preenchimento da estrutura interna da árvore sintática; testes unitários
-**Tiago Fernandes:** input, análise lexical, sintáctica e semântica e representação intermédia da gramática; testes unitários
-**Diogo Nunes:** input, leitura e análise lexical da gramática; visualização gráfica da árvore sintáctica
+**Ana Sousa:** input  e representação intermédia da sequência de tokens; interface gráfica; testes unitários  
+**Augusto Silva:** implementação do algoritmo de earley; criação e preenchimento da estrutura interna da árvore sintática; testes unitários  
+**Tiago Fernandes:** input, análise lexical, sintáctica e semântica e representação intermédia da gramática; testes unitários  
+**Diogo Nunes:** input, leitura e análise lexical da gramática; visualização gráfica da árvore sintáctica  
 
 PROS & CONS
 -----
